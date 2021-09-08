@@ -1,5 +1,5 @@
-STUID = 201220000
-STUNAME = 张三
+STUID = 200110619
+STUNAME = Chiro Liang
 
 # DO NOT modify the following code!!!
 

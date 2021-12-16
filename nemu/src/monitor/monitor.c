@@ -19,7 +19,7 @@ static void welcome() {
   printf("For help, type \"help\"\n");
   // Log("Exercise: Please remove me in the source code and compile NEMU again.");
   Log("I have made these source code compiled!");
-  assert(0);
+  // assert(0);
 }
 
 #ifndef CONFIG_TARGET_AM

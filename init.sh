@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 version=ics2021
 

@@ -12,13 +12,23 @@ static uint32_t get_instr(Decode *s) {
 #define def_DopHelper(name) \
   void concat(decode_op_, name) (Decode *s, Operand *op, word_t val, bool flag)
 
+/**
+ * @brief 取立即数到op->imm
+ * @param val: 值
+ */
 static def_DopHelper(i) {
   op->imm = val;
   print_Dop(op->str, OP_STR_SIZE, (flag ? "0x%x" : "%d"), op->imm);
 }
 
+/**
+ * @brief 取寄存器操作信息
+ * @param val: 寄存器号
+ * @param flag: 是否写入（regWrite）
+ */
 static def_DopHelper(r) {
   bool is_write = flag;
+  // x0寄存器
   static word_t zero_null = 0;
   op->preg = (is_write && val == 0) ? &zero_null : &gpr(val);
   print_Dop(op->str, OP_STR_SIZE, "%s", reg_name(val, 4));
@@ -37,6 +47,15 @@ static def_DHelper(U) {
 
 static def_DHelper(S) {
   decode_op_r(s, id_src1, s->isa.instr.s.rs1, false);
+  sword_t simm = (s->isa.instr.s.simm11_5 << 5) | s->isa.instr.s.imm4_0;
+  decode_op_i(s, id_src2, simm, false);
+  decode_op_r(s, id_dest, s->isa.instr.s.rs2, false);
+}
+
+static def_DHelper(B) {
+  decode_op_r(s, id_src1, s->isa.instr.s.rs1, false);
+  decode_op_i(s, id_src2, s->isa.instr.b.rs2, false);
+  // TODO: here.
   sword_t simm = (s->isa.instr.s.simm11_5 << 5) | s->isa.instr.s.imm4_0;
   decode_op_i(s, id_src2, simm, false);
   decode_op_r(s, id_dest, s->isa.instr.s.rs2, false);

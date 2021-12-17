@@ -63,6 +63,7 @@ void fetch_decode(Decode *s, vaddr_t pc) {
   p += space_len;
   strcpy(p, log_asmbuf);
   assert(strlen(s->logbuf) < sizeof(s->logbuf));
+  Log("%s", s->logbuf);
 #endif
 }
 
@@ -104,8 +105,6 @@ void cpu_exec(uint64_t n) {
     IFDEF(CONFIG_DIFFTEST, difftest_step(s.pc, cpu.pc));
     IFDEF(CONFIG_DEVICE, device_update());
   }
-
-  Log("I'm out");
 
   uint64_t timer_end = get_time();
   g_timer += timer_end - timer_start;

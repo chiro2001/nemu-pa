@@ -137,7 +137,6 @@ IMAGE_DEP = $(OBJS) am $(LIBS)
 endif
 $(IMAGE).elf: $(IMAGE_DEP)
 	@echo + LD "->" $(IMAGE_REL).elf
-	@echo exec: $(LD) $(LDFLAGS) -o $(IMAGE).elf --start-group $(LINKAGE) --end-group
 	@$(LD) $(LDFLAGS) -o $(IMAGE).elf --start-group $(LINKAGE) --end-group
 	@echo LD Done
 

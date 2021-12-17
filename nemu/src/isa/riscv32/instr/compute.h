@@ -19,12 +19,12 @@ def_EHelper(srai) { rtl_srai(s, ddest, id_src1->preg, id_src2->imm); }
  * @brief  jalr t = pc+4; pc=(x[rs1]+sext(offset))&~1; x[rd]=t
  */
 def_EHelper(jalr) {
-  static rtlreg_t t, target;
-  static rtlreg_t zero = 0;
-  Log("JUMP >> " FMT_WORD, target);
+  // static rtlreg_t t, target;
+  // static rtlreg_t zero = 0;
+  // Log("JUMP >> " FMT_WORD, target);
   
-  t = (rtlreg_t)(s->pc + 4);
-  target = *id_src1->preg + imm_sext32(id_src2->imm, 12);
-  rtl_jr(s, &target);
-  rtl_addi(s, ddest, &zero, t);
+  // t = (rtlreg_t)(s->pc + 4);
+  // target = *id_src1->preg + imm_sext32(id_src2->imm, 12);
+  // rtl_jr(s, &target);
+  // rtl_addi(s, ddest, &zero, t);
 }

@@ -87,6 +87,7 @@ void cpu_exec(uint64_t n) {
   Decode s;
   for (;n > 0; n --) {
     fetch_decode_exec_updatepc(&s);
+    Log("PC = " FMT_WORD, (uint32_t)s.pc);
     g_nr_guest_instr ++;
     IFDEF(CONFIG_DEBUG, debug_hook(s.pc, s.logbuf));
     if (nemu_state.state != NEMU_RUNNING) break;

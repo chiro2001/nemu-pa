@@ -23,6 +23,7 @@ def_EHelper(jalr) {
   static rtlreg_t zero = 0;
   t = (rtlreg_t)(s->pc + 4);
   target = *id_src1->preg + imm_sext32(id_src2->imm, 12);
+  Log("JUMP >> " FMT_WORD, target);
   rtl_jr(s, &target);
   rtl_addi(s, ddest, &zero, t);
 }

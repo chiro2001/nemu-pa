@@ -43,12 +43,12 @@ static void fetch_decode_exec_updatepc(Decode *s) {
 }
 
 void fetch_decode(Decode *s, vaddr_t pc) {
-  Log("fetch_decode");
   s->pc = pc;
   s->snpc = pc;
   IFDEF(CONFIG_DEBUG, log_bytebuf[0] = '\0');
   int idx = isa_fetch_decode(s);
   s->dnpc = s->snpc;
+  Log("fetch_decode [%d]", __LINE__);
   s->EHelper = g_exec_table[idx];
 #ifdef CONFIG_DEBUG
   char *p = s->logbuf;
@@ -60,6 +60,7 @@ void fetch_decode(Decode *s, vaddr_t pc) {
   memset(p, ' ', space_len);
   p += space_len;
   strcpy(p, log_asmbuf);
+  Log("fetch_decode [%d]", __LINE__);
   assert(strlen(s->logbuf) < sizeof(s->logbuf));
   Log("%s", log_asmbuf);
 #endif

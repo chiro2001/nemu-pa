@@ -61,7 +61,7 @@ void fetch_decode(Decode *s, vaddr_t pc) {
   p += space_len;
   strcpy(p, log_asmbuf);
   Log("fetch_decode [%d]", __LINE__);
-  assert(strlen(s->logbuf) < sizeof(s->logbuf));
+  // assert(strlen(s->logbuf) < sizeof(s->logbuf));
   Log("%s", log_asmbuf);
 #endif
 }

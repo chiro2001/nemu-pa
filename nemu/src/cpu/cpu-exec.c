@@ -48,7 +48,6 @@ void fetch_decode(Decode *s, vaddr_t pc) {
   IFDEF(CONFIG_DEBUG, log_bytebuf[0] = '\0');
   int idx = isa_fetch_decode(s);
   s->dnpc = s->snpc;
-  Log("fetch_decode [%d]", __LINE__);
   s->EHelper = g_exec_table[idx];
 #ifdef CONFIG_DEBUG
   char *p = s->logbuf;
@@ -60,9 +59,7 @@ void fetch_decode(Decode *s, vaddr_t pc) {
   memset(p, ' ', space_len);
   p += space_len;
   strcpy(p, log_asmbuf);
-  Log("fetch_decode [%d]", __LINE__);
   assert(strlen(s->logbuf) < sizeof(s->logbuf));
-  Log("%s", log_asmbuf);
 #endif
 }
 
@@ -90,7 +87,6 @@ void cpu_exec(uint64_t n) {
   Decode s;
   for (;n > 0; n --) {
     fetch_decode_exec_updatepc(&s);
-    Log("PC = " FMT_WORD, (uint32_t)s.pc);
     g_nr_guest_instr ++;
     IFDEF(CONFIG_DEBUG, debug_hook(s.pc, s.logbuf));
     if (nemu_state.state != NEMU_RUNNING) break;

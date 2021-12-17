@@ -43,6 +43,7 @@ static void fetch_decode_exec_updatepc(Decode *s) {
 }
 
 void fetch_decode(Decode *s, vaddr_t pc) {
+  Log("fetch_decode");
   s->pc = pc;
   s->snpc = pc;
   IFDEF(CONFIG_DEBUG, log_bytebuf[0] = '\0');

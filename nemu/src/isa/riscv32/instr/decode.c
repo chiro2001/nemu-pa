@@ -1,16 +1,22 @@
-#include "../local-include/reg.h"
 #include <cpu/ifetch.h>
 #include <isa-all-instr.h>
 
+#include "../local-include/reg.h"
+
 def_all_THelper();
 
-static uint32_t get_instr(Decode *s) {
-  return s->isa.instr.val;
-}
+static uint32_t get_instr(Decode *s) { return s->isa.instr.val; }
 
 // decode operand helper
 #define def_DopHelper(name) \
-  void concat(decode_op_, name) (Decode *s, Operand *op, word_t val, bool flag)
+  void concat(decode_op_, name)(Decode * s, Operand * op, word_t val, bool flag)
+
+#define imm_expand(val, width_val, width_exp)                            \
+  ((((val) >> ((width_val)-1)) & 0x01)                                   \
+       ? ((((1 << (width_exp)) - 1) - ((1 << (width_val)) - 1)) | (val)) \
+       : (val))
+
+#define imm_expand32(val, width_val) imm_expand(val, width_val, 32)
 
 /**
  * @brief 取立即数到op->imm
@@ -36,7 +42,7 @@ static def_DopHelper(r) {
 
 static def_DHelper(I) {
   decode_op_r(s, id_src1, s->isa.instr.i.rs1, false);
-  decode_op_i(s, id_src2, s->isa.instr.i.simm11_0, false);
+  decode_op_i(s, id_src2, imm_expand32(s->isa.instr.i.simm11_0, 12), false);
   decode_op_r(s, id_dest, s->isa.instr.i.rd, true);
 }
 
@@ -47,18 +53,29 @@ static def_DHelper(U) {
 
 static def_DHelper(S) {
   decode_op_r(s, id_src1, s->isa.instr.s.rs1, false);
-  sword_t simm = (s->isa.instr.s.simm11_5 << 5) | s->isa.instr.s.imm4_0;
+  sword_t simm =
+      imm_expand32((s->isa.instr.s.simm11_5 << 5) | s->isa.instr.s.imm4_0, 12);
   decode_op_i(s, id_src2, simm, false);
   decode_op_r(s, id_dest, s->isa.instr.s.rs2, false);
 }
 
 static def_DHelper(B) {
-  decode_op_r(s, id_src1, s->isa.instr.s.rs1, false);
-  decode_op_i(s, id_src2, s->isa.instr.b.rs2, false);
-  // TODO: here.
-  sword_t simm = (s->isa.instr.s.simm11_5 << 5) | s->isa.instr.s.imm4_0;
+  decode_op_r(s, id_src1, s->isa.instr.b.rs1, false);
+  sword_t simm = imm_expand32(
+      (s->isa.instr.b.simm12 << 12) | (s->isa.instr.b.imm11 << 11) |
+          (s->isa.instr.b.imm10_5 << 5) | (s->isa.instr.b.imm4_1 << 1),
+      13);
   decode_op_i(s, id_src2, simm, false);
-  decode_op_r(s, id_dest, s->isa.instr.s.rs2, false);
+  decode_op_r(s, id_dest, s->isa.instr.b.rs2, false);
+}
+
+static def_DHelper(J) {
+  sword_t simm = imm_expand32(
+      (s->isa.instr.j.simm20 << 20) | (s->isa.instr.j.imm19_12 << 12) |
+          (s->isa.instr.j.imm11 << 11) | (s->isa.instr.j.imm10_1 << 1),
+      21);
+  decode_op_i(s, id_src2, simm, false);
+  decode_op_r(s, id_dest, s->isa.instr.j.rd, false);
 }
 
 def_THelper(load) {
@@ -71,11 +88,23 @@ def_THelper(store) {
   return EXEC_ID_inv;
 }
 
+/**
+ * @brief ALU parts
+ */
+
+def_THelper(add) {
+  def_INSTR_TAB("??????? ????? ????? 010 ????? ????? ??", add);
+  return EXEC_ID_inv;
+}
+
 def_THelper(main) {
-  def_INSTR_IDTAB("??????? ????? ????? ??? ????? 00000 11", I     , load);
-  def_INSTR_IDTAB("??????? ????? ????? ??? ????? 01000 11", S     , store);
-  def_INSTR_IDTAB("??????? ????? ????? ??? ????? 01101 11", U     , lui);
-  def_INSTR_TAB  ("??????? ????? ????? ??? ????? 11010 11",         nemu_trap);
+  def_INSTR_IDTAB("??????? ????? ????? ??? ????? 00000 11", I, load);
+  def_INSTR_IDTABW("??????? ????? ????? ??? ????? 00000 11", I, load, 0);
+  def_INSTR_IDTAB("??????? ????? ????? ??? ????? 01000 11", S, store);
+  def_INSTR_IDTAB("??????? ????? ????? ??? ????? 01101 11", U, lui);
+  def_INSTR_IDTAB("??????? ????? ????? ??? ????? 01100 11", R, add);
+  def_INSTR_IDTAB("??????? ????? ????? ??? ????? 00100 11", R, addi);
+  def_INSTR_TAB("??????? ????? ????? ??? ????? 11010 11", nemu_trap);
   return table_inv(s);
 };
 

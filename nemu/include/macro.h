@@ -93,3 +93,15 @@
     ioe_write(reg, &__io_param); })
 
 #endif
+
+// sext
+#define imm_sext(val, width_val, width_exp)                             \
+  (((((val) >> ((width_val)-1)) & 0x01)                                   \
+        ? ((((1llu << (width_exp - 1)) + 1) - ((1 << (width_val)) - 1)) | \
+           (val))                                                         \
+        : (val)) &                                                        \
+   0xFFFFFFFF)
+
+#define imm_sext32(val, width_val) imm_sext(val, width_val, 32)
+
+

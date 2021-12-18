@@ -24,6 +24,7 @@ run: run-env
 	$(call git_commit, "run")
 	@echo $(NEMU_EXEC) >> $(BUILD_DIR)/$(RUN_FILE)
 	# $(NEMU_EXEC)
+	@sleep 0.2
 	$(shell sh $(BUILD_DIR)/$(RUN_FILE))
 
 gdb: run-env

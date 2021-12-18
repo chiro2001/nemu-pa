@@ -27,7 +27,7 @@ run: run-env
 	# $(NEMU_EXEC)
 	@sleep 0.2
 	@chmod +x $(RUN_FILE)
-	$(shell ./$(RUN_FILE))
+	$(shell $(RUN_FILE))
 
 gdb: run-env
 	$(call git_commit, "gdb")

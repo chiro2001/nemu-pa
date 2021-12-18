@@ -28,6 +28,7 @@ run-env: $(BINARY) $(DIFF_REF_SO)
 
 run: run-env
 	$(call git_commit, "run")
+	@echo ARG_FILE: $(ARG_FILE)
 	@echo -e "$(ARGS) $(IMG)" > $(ARG_FILE)
 	# $(NEMU_EXEC)
 	@sleep 0.2

@@ -16,18 +16,22 @@ override ARGS += $(ARGS_DIFF)
 IMG ?=
 NEMU_EXEC := $(BINARY) $(ARGS) $(IMG)
 
-RUN_FILENAME := .run.sh
-RUN_FILE := $(BUILD_DIR)/$(RUN_FILENAME)
+ARG_FILENAME := $(CONFIG_EXT_RUN_CONFIG_FILE)
+ARG_FILE := $(BUILD_DIR)/$(ARG_FILENAME)
+ifdef DEBUG_VSCODE
+EXEC_FILE := 
+else
+EXEC_FILE := $(NEMU_EXEC)
+endif
 
 run-env: $(BINARY) $(DIFF_REF_SO)
 
 run: run-env
 	$(call git_commit, "run")
-	@echo -e "#!/bin/sh\n$(NEMU_EXEC)" > $(RUN_FILE)
+	@echo -e "$(ARGS) $(IMG)" > $(ARG_FILE)
 	# $(NEMU_EXEC)
 	@sleep 0.2
-	@chmod +x $(RUN_FILE)
-	$(RUN_FILE)
+	$(EXEC_FILE)
 
 gdb: run-env
 	$(call git_commit, "gdb")

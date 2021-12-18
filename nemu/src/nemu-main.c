@@ -15,7 +15,6 @@ int main_parse_args_file(char *filename) {
   struct stat sb;
   FILE *fp = NULL;
   int argc = 1;
-  system("ls -lah");
   Assert((fp = fopen(RUN_CONFIG_FILE, "r")),
          "No config file provided! File not found: %s", RUN_CONFIG_FILE);
   assert(!(stat(RUN_CONFIG_FILE, &sb)));
@@ -25,7 +24,8 @@ int main_parse_args_file(char *filename) {
   char *arg = malloc(sizeof(char) * (file_size + 2 + filename_length));
   assert(arg);
   strcpy(arg, filename);
-  char *p_arg = arg + filename_length;
+  arg[filename_length] = ' ';
+  char *p_arg = arg + filename_length + 1;
   fread(p_arg, file_size, 1, fp);
   arg[file_size] = '\0';
   char **argv = malloc(sizeof(char *) * 128);

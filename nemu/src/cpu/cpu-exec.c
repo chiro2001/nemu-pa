@@ -23,7 +23,7 @@ void device_update();
 #ifdef CONFIG_DEBUG
 static void debug_hook(vaddr_t pc, const char *asmbuf) {
   log_write("%s\n", asmbuf);
-  if (g_print_step) {
+  if (g_print_step || CONFIG_DEBUG) {
     // puts(asmbuf);
     Log("%s", asmbuf);
   }
@@ -63,7 +63,7 @@ void fetch_decode(Decode *s, vaddr_t pc) {
   p += space_len;
   strcpy(p, log_asmbuf);
   assert(strlen(s->logbuf) < sizeof(s->logbuf));
-  Log("%s", s->logbuf);
+  // Log("%s", s->logbuf);
 #endif
 }
 

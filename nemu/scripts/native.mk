@@ -28,6 +28,7 @@ run: run-env
 	@sleep 0.2
 	@chmod +x $(RUN_FILE)
 	$(RUN_FILE)
+	-@rm $(RUN_FILE)
 
 gdb: run-env
 	$(call git_commit, "gdb")

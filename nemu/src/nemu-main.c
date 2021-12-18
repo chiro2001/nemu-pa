@@ -7,7 +7,7 @@ void am_init_monitor();
 void engine_start();
 int is_exit_status_bad();
 
-#define RUN_CONFIG_FILE "./" CONFIG_EXT_RUN_CONFIG_FILE
+#define RUN_CONFIG_FILE "./build/" CONFIG_EXT_RUN_CONFIG_FILE
 
 char **g_argv = NULL;
 

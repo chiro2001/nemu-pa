@@ -7,6 +7,8 @@ void am_init_monitor();
 void engine_start();
 int is_exit_status_bad();
 
+#define RUN_CONFIG_FILE "./" CONFIG_EXT_RUN_CONFIG_FILE
+
 char **g_argv = NULL;
 
 int main_parse_args_file(char *filename) {
@@ -14,11 +16,9 @@ int main_parse_args_file(char *filename) {
   FILE *fp = NULL;
   int argc = 1;
   system("ls -lah");
-  fp = fopen(CONFIG_EXT_RUN_CONFIG_FILE, "r");
-  // Assert((fp = fopen(CONFIG_EXT_RUN_CONFIG_FILE, "r")),
-  //        "No config file provided! File not found: %s",
-  //        CONFIG_EXT_RUN_CONFIG_FILE);
-  assert(!(stat(CONFIG_EXT_RUN_CONFIG_FILE, &sb)));
+  Assert((fp = fopen(RUN_CONFIG_FILE, "r")),
+         "No config file provided! File not found: %s", RUN_CONFIG_FILE);
+  assert(!(stat(RUN_CONFIG_FILE, &sb)));
   assert(filename);
   size_t file_size = sb.st_size;
   int filename_length = strlen(filename);

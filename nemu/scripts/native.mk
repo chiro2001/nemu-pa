@@ -23,7 +23,7 @@ run-env: $(BINARY) $(DIFF_REF_SO)
 
 run: run-env
 	$(call git_commit, "run")
-	@echo $(NEMU_EXEC) >> $(RUN_FILE)
+	@echo -e "#!/bin/sh\n$(NEMU_EXEC)" > $(RUN_FILE)
 	# $(NEMU_EXEC)
 	@sleep 0.2
 	@chmod +x $(RUN_FILE)

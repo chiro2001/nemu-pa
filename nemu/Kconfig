@@ -198,3 +198,10 @@ config RT_CHECK
   default y
 
 endmenu
+
+menu "Extensions"
+comment "Added by Chiro"
+config EXT_RUN_CONFIG_FILE
+  string "Default config file to read when no args provided"
+  default ".nemu_run_args"
+endmenu

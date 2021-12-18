@@ -1,11 +1,51 @@
 #include <common.h>
+#include <string.h>
+#include <sys/stat.h>
 
 void init_monitor(int, char *[]);
 void am_init_monitor();
 void engine_start();
 int is_exit_status_bad();
 
+char **g_argv = NULL;
+
+int main_parse_args_file(char *filename) {
+  struct stat sb;
+  FILE *fp = NULL;
+  int argc = 1;
+  Assert((fp = fopen(CONFIG_EXT_RUN_CONFIG_FILE, "r")),
+         "No config file provided! File not found: %s",
+         CONFIG_EXT_RUN_CONFIG_FILE);
+  assert(!(stat(CONFIG_EXT_RUN_CONFIG_FILE, &sb)));
+  assert(filename);
+  size_t file_size = sb.st_size;
+  int filename_length = strlen(filename);
+  char *arg = malloc(sizeof(char) * (file_size + 2 + filename_length));
+  strcpy(arg, filename);
+  char *p_arg = arg + filename_length;
+  fread(arg, file_size, 1, fp);
+  arg[file_size] = '\0';
+  assert(arg);
+  char **argv = malloc(sizeof(char *) * 128);
+  argv[0] = arg;
+  g_argv = argv;
+  char *p = p_arg;
+  while (*p) {
+    if (*p == ' ' && *(p + 1)) {
+      argc++;
+      *p = '\0';
+      argv[argc - 1] = p + 1;
+    }
+    p++;
+  }
+  return argc;
+}
+
 int main(int argc, char *argv[]) {
+  /* When no args provided, find EXT_RUN_CONFIG_FILE*/
+  if (argc == 1) {
+    return main(main_parse_args_file(argv[0]), g_argv);
+  }
   /* Initialize the monitor. */
 #ifdef CONFIG_TARGET_AM
   am_init_monitor();

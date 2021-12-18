@@ -22,9 +22,9 @@ run-env: $(BINARY) $(DIFF_REF_SO)
 
 run: run-env
 	$(call git_commit, "run")
-	@echo $(NEMU_EXEC) >> $(RUN_FILE)
+	@echo $(NEMU_EXEC) >> $(BUILD_DIR)/$(RUN_FILE)
 	# $(NEMU_EXEC)
-	$(shell sh $(RUN_FILE))
+	$(shell sh $(BUILD_DIR)/$(RUN_FILE))
 
 gdb: run-env
 	$(call git_commit, "gdb")

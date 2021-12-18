@@ -18,11 +18,6 @@ NEMU_EXEC := $(BINARY) $(ARGS) $(IMG)
 
 RUN_FILENAME := .run.sh
 RUN_FILE := $(BUILD_DIR)/$(RUN_FILENAME)
-ifdef DEBUG_VSCODE
-RUN_FILE_DELETE := 
-else
-RUN_FILE_DELETE := rm $(RUN_FILE)
-endif
 
 run-env: $(BINARY) $(DIFF_REF_SO)
 
@@ -33,7 +28,6 @@ run: run-env
 	@sleep 0.2
 	@chmod +x $(RUN_FILE)
 	$(RUN_FILE)
-	-$(RUN_FILE_DELETE)
 
 gdb: run-env
 	$(call git_commit, "gdb")

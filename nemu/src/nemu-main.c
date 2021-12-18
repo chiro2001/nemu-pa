@@ -23,11 +23,11 @@ int main_parse_args_file(char *filename) {
   size_t file_size = sb.st_size;
   int filename_length = strlen(filename);
   char *arg = malloc(sizeof(char) * (file_size + 2 + filename_length));
+  assert(arg);
   strcpy(arg, filename);
   char *p_arg = arg + filename_length;
-  fread(arg, file_size, 1, fp);
+  fread(p_arg, file_size, 1, fp);
   arg[file_size] = '\0';
-  assert(arg);
   char **argv = malloc(sizeof(char *) * 128);
   argv[0] = arg;
   g_argv = argv;

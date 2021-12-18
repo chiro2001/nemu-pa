@@ -13,9 +13,11 @@ int main_parse_args_file(char *filename) {
   struct stat sb;
   FILE *fp = NULL;
   int argc = 1;
-  Assert((fp = fopen(CONFIG_EXT_RUN_CONFIG_FILE, "r")),
-         "No config file provided! File not found: %s",
-         CONFIG_EXT_RUN_CONFIG_FILE);
+  system("ls -lah");
+  fp = fopen(CONFIG_EXT_RUN_CONFIG_FILE, "r");
+  // Assert((fp = fopen(CONFIG_EXT_RUN_CONFIG_FILE, "r")),
+  //        "No config file provided! File not found: %s",
+  //        CONFIG_EXT_RUN_CONFIG_FILE);
   assert(!(stat(CONFIG_EXT_RUN_CONFIG_FILE, &sb)));
   assert(filename);
   size_t file_size = sb.st_size;

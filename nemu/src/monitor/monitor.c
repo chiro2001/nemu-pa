@@ -9,8 +9,8 @@ void init_device();
 void init_sdb();
 
 static void welcome() {
-  Log("Debug: %s", MUXDEF(CONFIG_DEBUG, ASNI_FMT("ON", ASNI_FG_GREEN), ASNI_FMT("OFF", ASNI_FG_RED)));
-  IFDEF(CONFIG_DEBUG, Log("If debug mode is on, a log file will be generated "
+  Log("Debug: %s", MUXDEF(CONFIG_TRACE, ASNI_FMT("ON", ASNI_FG_GREEN), ASNI_FMT("OFF", ASNI_FG_RED)));
+  IFDEF(CONFIG_TRACE, Log("If debug mode is on, a log file will be generated "
       "to record every instruction NEMU executes. This may lead to a large log file. "
       "If it is not necessary, you can turn it off in include/common.h.")
   );

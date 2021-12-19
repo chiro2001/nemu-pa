@@ -26,7 +26,8 @@ int main_parse_args_file(char *filename) {
   strcpy(arg, filename);
   arg[filename_length] = '\0';
   char *p_arg = arg + filename_length + 1;
-  fread(p_arg, file_size, 1, fp);
+  size_t size = fread(p_arg, file_size, 1, fp);
+  assert(size);
   arg[file_size + 1 + filename_length] = '\0';
   char **argv = malloc(sizeof(char *) * 128);
   argv[0] = arg;

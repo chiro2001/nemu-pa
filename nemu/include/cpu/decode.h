@@ -17,7 +17,7 @@ typedef struct {
   IFDEF(CONFIG_ISA_x86, rtlreg_t val);
   IFDEF(CONFIG_ISA_x86, uint8_t type);
   IFDEF(CONFIG_ISA_x86, uint8_t reg);
-  IFDEF(CONFIG_DEBUG, char str[OP_STR_SIZE]);
+  IFDEF(CONFIG_TRACE, char str[OP_STR_SIZE]);
 } Operand;
 
 typedef struct Decode {
@@ -27,7 +27,7 @@ typedef struct Decode {
   void (*EHelper)(struct Decode *);
   Operand dest, src1, src2;
   ISADecodeInfo isa;
-  IFDEF(CONFIG_DEBUG, char logbuf[80]);
+  IFDEF(CONFIG_TRACE, char logbuf[80]);
 } Decode;
 
 #define id_src1 (&s->src1)
@@ -36,8 +36,8 @@ typedef struct Decode {
 
 
 // --- instruction tracing log ---
-#define print_Dop(...) IFDEF(CONFIG_DEBUG, snprintf(__VA_ARGS__))
-#define print_asm(...) IFDEF(CONFIG_DEBUG, snprintf(log_asmbuf, sizeof(log_asmbuf), __VA_ARGS__))
+#define print_Dop(...) IFDEF(CONFIG_TRACE, snprintf(__VA_ARGS__))
+#define print_asm(...) IFDEF(CONFIG_TRACE, snprintf(log_asmbuf, sizeof(log_asmbuf), __VA_ARGS__))
 
 #ifndef suffix_char
 #define suffix_char(width) ' '

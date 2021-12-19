@@ -20,10 +20,10 @@ rtlreg_t tmp_reg[4];
 
 void device_update();
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_TRACE
 static void debug_hook(vaddr_t pc, const char *asmbuf) {
   log_write("%s\n", asmbuf);
-  if (g_print_step || CONFIG_DEBUG) {
+  if (g_print_step || CONFIG_TRACE) {
     // puts(asmbuf);
     Log("%s", asmbuf);
   }
@@ -47,11 +47,11 @@ static void fetch_decode_exec_updatepc(Decode *s) {
 void fetch_decode(Decode *s, vaddr_t pc) {
   s->pc = pc;
   s->snpc = pc;
-  IFDEF(CONFIG_DEBUG, log_bytebuf[0] = '\0');
+  IFDEF(CONFIG_TRACE, log_bytebuf[0] = '\0');
   int idx = isa_fetch_decode(s);
   s->dnpc = s->snpc;
   s->EHelper = g_exec_table[idx];
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_TRACE
   char *p = s->logbuf;
   int len =
       snprintf(p, sizeof(s->logbuf), FMT_WORD ":   %s", s->pc, log_bytebuf);
@@ -99,7 +99,7 @@ void cpu_exec(uint64_t n) {
   for (; n > 0; n--) {
     fetch_decode_exec_updatepc(&s);
     g_nr_guest_instr++;
-    IFDEF(CONFIG_DEBUG, debug_hook(s.pc, s.logbuf));
+    IFDEF(CONFIG_TRACE, debug_hook(s.pc, s.logbuf));
     if (nemu_state.state != NEMU_RUNNING) break;
     IFDEF(CONFIG_DIFFTEST, difftest_step(s.pc, cpu.pc));
     IFDEF(CONFIG_DEVICE, device_update());

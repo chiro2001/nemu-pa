@@ -4,7 +4,7 @@
 
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   bool reg_diffs[32];
-  bool same = true;
+  bool same = cpu.pc == ref_r->pc;
   memset(reg_diffs, 0, sizeof(bool) * 32);
   for (size_t i = 0; i < 32; i++) {
     if (ref_r->gpr[i]._32 != gpr(i)) {

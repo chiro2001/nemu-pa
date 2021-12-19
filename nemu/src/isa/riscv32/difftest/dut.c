@@ -16,7 +16,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
     Log(ASNI_FMT ("Difftest failed at " FMT_WORD " : " FMT_WORD "!", ASNI_FG_RED), cpu.pc, ref_r->pc);
     for (size_t i = 0; i < 32; i++) {
       if (reg_diffs[i]) {
-        Log("REG DIFF x%lu: " FMT_WORD " : " FMT_WORD, i, gpr(i), ref_r->gpr[i]._32);
+        Log("REG DIFF %s: " FMT_WORD " : " FMT_WORD, reg_name(i, 0), gpr(i), ref_r->gpr[i]._32);
       }
     }
   }

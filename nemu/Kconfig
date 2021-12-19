@@ -204,4 +204,7 @@ comment "Added by Chiro"
 config EXT_RUN_CONFIG_FILE
   string "Default config file to read when no args provided"
   default ".nemu_run_args"
+config EXT_PRINT_JUMP
+  bool "Print jump info"
+  default y
 endmenu

@@ -10,12 +10,12 @@ def_EHelper(lh) {
 }
 def_EHelper(lbu) {
   rtl_lm(s, ddest, dsrc1, id_src2->imm, 4);
-  Log("read " FMT_WORD " -> " FMT_WORD, *ddest, *ddest & 0xFF);
+  // Log("read " FMT_WORD " -> " FMT_WORD, *ddest, *ddest & 0xFF);
   *ddest = *ddest & 0xFF;
 }
 def_EHelper(lhu) {
   rtl_lm(s, ddest, dsrc1, id_src2->imm, 2);
-  Log("read " FMT_WORD " -> " FMT_WORD, *ddest, *ddest & 0xFFFF);
+  // Log("read " FMT_WORD " -> " FMT_WORD, *ddest, *ddest & 0xFFFF);
   *ddest = *ddest & 0xFFFF;
 }
 // sw rs2, offset(rs1)   //M[x[rs1] + sext(offset) = x[rs2][31: 0]

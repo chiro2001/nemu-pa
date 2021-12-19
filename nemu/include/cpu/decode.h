@@ -47,17 +47,20 @@ typedef struct Decode {
   print_asm(str(instr) "%c", suffix_char(id_dest->width))
 
 #define print_asm_template1(instr) \
-  print_asm(str(instr) "%c %s", suffix_char(id_dest->width), id_dest->str)
+  print_asm(str(instr) "	%c%s", suffix_char(id_dest->width), id_dest->str)
 
 #define print_asm_template2(instr) \
-  print_asm(str(instr) "%c %s,%s", suffix_char(id_dest->width), id_src1->str, id_dest->str)
+  print_asm(str(instr) "	%c%s,%s", suffix_char(id_dest->width), id_dest->str, id_src1->str)
 
 #define print_asm_template3(instr) \
-  print_asm(str(instr) "%c %s,%s,%s", suffix_char(id_dest->width), id_src1->str, id_src2->str, id_dest->str)
+  print_asm(str(instr) "	%c%s,%s,%s", suffix_char(id_dest->width), id_dest->str, id_src1->str, id_src2->str)
+
+#define print_asm_template4(instr) \
+  print_asm(str(instr) "	%c%s,%s(%s)", suffix_char(id_dest->width), id_dest->str, id_src2->str, id_src1->str)
 
 
 // --- container for all instrucitons ---
-#define INSTR_LIST(f) INSTR_NULLARY(f) INSTR_UNARY(f) INSTR_BINARY(f) INSTR_TERNARY(f)
+#define INSTR_LIST(f) INSTR_NULLARY(f) INSTR_UNARY(f) INSTR_BINARY(f) INSTR_TERNARY(f) INSTR_MEM(f)
 
 #define def_EXEC_ID(name) \
   enum { concat(EXEC_ID_, name) = __COUNTER__ };
@@ -75,12 +78,14 @@ typedef struct Decode {
 #define def_THelper_unary(name)   def_THelper_arity(name, 1)
 #define def_THelper_binary(name)  def_THelper_arity(name, 2)
 #define def_THelper_ternary(name) def_THelper_arity(name, 3)
+#define def_THelper_mem(name)     def_THelper_arity(name, 4)
 
 #define def_all_THelper() \
   MAP(INSTR_NULLARY, def_THelper_nullary) \
   MAP(INSTR_UNARY,   def_THelper_unary  ) \
   MAP(INSTR_BINARY,  def_THelper_binary ) \
-  MAP(INSTR_TERNARY, def_THelper_ternary)
+  MAP(INSTR_TERNARY, def_THelper_ternary) \
+  MAP(INSTR_MEM,     def_THelper_mem)
 
 
 // --- prototype of decode helpers ---

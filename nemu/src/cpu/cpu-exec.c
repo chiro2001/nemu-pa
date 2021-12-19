@@ -105,6 +105,8 @@ void cpu_exec(uint64_t n) {
     IFDEF(CONFIG_DEVICE, device_update());
   }
 
+  serial_putc_buffed('\0');
+
   uint64_t timer_end = get_time();
   g_timer += timer_end - timer_start;
 

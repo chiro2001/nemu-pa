@@ -29,6 +29,8 @@ static def_DopHelper(r) {
   bool is_write = flag;
   // x0寄存器
   static word_t zero_null = 0;
+  // always zero!!!
+  zero_null = 0;
   op->preg = (is_write && val == 0) ? &zero_null : &gpr(val);
   print_Dop(op->str, OP_STR_SIZE, "%s", reg_name(val, 4));
 }

@@ -207,4 +207,7 @@ config EXT_RUN_CONFIG_FILE
 config EXT_PRINT_JUMP
   bool "Print jump info"
   default y
+config EXT_PRINT_LOADSAVE
+  bool "Print load & save"
+  default y
 endmenu

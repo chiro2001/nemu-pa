@@ -61,4 +61,6 @@ uint64_t get_time();
 extern char log_bytebuf[50];
 extern char log_asmbuf[128];
 
+void serial_putc_buffed(char ch);
+
 #endif

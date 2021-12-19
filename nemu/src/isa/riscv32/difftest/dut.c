@@ -23,7 +23,8 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   if (!same) {
     char *section = g_section;
     if (img_file) {
-      getcwd(cwd, 128);
+      char *c = getcwd(cwd, 128);
+      assert(c);
       strcpy(buf2, basename(img_file));
       char *p = buf2;
       while (*p) {
@@ -37,7 +38,8 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
               "strtonum($1), $0}' | awk '$1 > " "%u" " {print $0}' | head -n 1 | awk '{ print $NF }'` ; cd %s",
               buf2, ref_r->pc, cwd);
       FILE *f = popen(buf, "r");
-      fscanf(f, "%s", section);
+      int r = fscanf(f, "%s", section);
+      assert(r);
       pclose(f);
     } else {
       section = NULL;

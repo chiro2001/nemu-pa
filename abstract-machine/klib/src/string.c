@@ -17,8 +17,9 @@ size_t strlen(const char *s) {
 char *strcpy(char *dst, const char *src) {
   assert(dst);
   assert(src);
-  while (*src) *(dst++) = *(src++);
-  *dst = '\0';
+  char *p = dst;
+  while (*src) *(p++) = *(src++);
+  *p = '\0';
   return dst;
 }
 
@@ -36,8 +37,7 @@ char *strcat(char *dst, const char *src) {
   assert(src);
   char *tail = dst;
   while (*tail) tail++;
-  while (*src) *(tail++) = *(src++);
-  *tail = '\0';
+  while ((*tail++ = *src++) != '\0');
   return dst;
 }
 
@@ -45,7 +45,10 @@ int strcmp(const char *s1, const char *s2) {
   assert(s1);
   assert(s2);
   while (*s1 && *s2) {
-    if (*s1 < *s2) return -1;
+    if (*s1 < *s2) {
+      printf("%c < %c, ret -1\n", *s1, *s2);
+      return -1;
+    }
     if (*s1 > *s2) return 1;
     s1++;
     s2++;

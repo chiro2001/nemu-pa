@@ -14,7 +14,6 @@
 #include <assert.h>
 #include <stdlib.h>
 
-// TODO: remote div
 #endif
 
 #if CONFIG_MBASE + CONFIG_MSIZE > 0x100000000ul
@@ -32,5 +31,7 @@ typedef MUXDEF(PMEM64, uint64_t, uint32_t) paddr_t;
 typedef uint16_t ioaddr_t;
 
 #include <debug.h>
+
+extern char *img_file;
 
 #endif

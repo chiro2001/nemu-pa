@@ -62,5 +62,7 @@ extern char log_bytebuf[50];
 extern char log_asmbuf[128];
 
 void serial_putc_buffed(char ch);
+const char *find_section(uint32_t pc);
+void elf_init();
 
 #endif

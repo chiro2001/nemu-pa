@@ -217,7 +217,13 @@ config EXT_RUN_CONFIG_FILE
 config EXT_PRINT_JUMP
   bool "Print jump info"
   default y
+config EXT_PRINT_SECTIONS
+  bool "Load & print section info"
+  default y
 config EXT_PRINT_LOADSAVE
   bool "Print load & save"
   default y
+config EXT_PRINT_ARGS
+  bool "Print launch args"
+  default n
 endmenu

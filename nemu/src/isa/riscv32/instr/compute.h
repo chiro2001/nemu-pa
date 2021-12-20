@@ -34,6 +34,19 @@ def_EHelper(slti) {
 }
 def_EHelper(sltu) { rtl_li(s, ddest, *dsrc1 < *dsrc2 ? 1 : 0); }
 def_EHelper(sltiu) { rtl_li(s, ddest, *dsrc1 < id_src2->imm ? 1 : 0); }
+
+#define jump_info(target)                                                   \
+  do {                                                                      \
+    static rtlreg_t last = 0;                                               \
+    if (last != target) {                                                   \
+      IFDEF(CONFIG_EXT_PRINT_JUMP,                                          \
+            MUXDEF(CONFIG_EXT_PRINT_SECTIONS,                               \
+                   Log("\t" FMT_WORD " @%s", target, find_section(target)), \
+                   Log("\t" FMT_WORD, target)));                            \
+    }                                                                       \
+    last = target;                                                          \
+  } while (0)
+
 /**
  * @brief  jal x[rd] = pc+4; pc += sext(offset)
  */
@@ -41,7 +54,7 @@ def_EHelper(jal) {
   static rtlreg_t t, target;
   t = (rtlreg_t)(s->pc + 4);
   target = (rtlreg_t)(s->pc + id_src2->imm);
-  IFDEF(CONFIG_EXT_PRINT_JUMP, Log("JUMP >> " FMT_WORD, target));
+  jump_info(target);
   rtl_jr(s, &target);
   rtl_li(s, ddest, t);
 }
@@ -53,7 +66,7 @@ def_EHelper(jalr) {
   static rtlreg_t t, target;
   t = (rtlreg_t)(s->pc + 4);
   target = *dsrc1 + imm_sext32(id_src2->imm, 12);
-  IFDEF(CONFIG_EXT_PRINT_JUMP, Log("JUMPR>> " FMT_WORD, target));
+  jump_info(target);
   rtl_jr(s, &target);
   rtl_li(s, ddest, t);
 }
@@ -66,7 +79,7 @@ def_EHelper(beq) {
   // Log("beq: " FMT_WORD ", " FMT_WORD, *dsrc1, id_src2->imm);
   if (*dsrc1 == *ddest) {
     target = s->pc + imm_sext32(id_src2->imm, 13);
-    IFDEF(CONFIG_EXT_PRINT_JUMP, Log("BEQJ >> " FMT_WORD, target));
+    jump_info(target);
     rtl_jr(s, &target);
   }
 }
@@ -78,7 +91,7 @@ def_EHelper(bne) {
   static rtlreg_t target;
   if (*dsrc1 != *ddest) {
     target = s->pc + imm_sext32(id_src2->imm, 13);
-    IFDEF(CONFIG_EXT_PRINT_JUMP, Log("BNEJ >> " FMT_WORD, target));
+    jump_info(target);
     rtl_jr(s, &target);
   }
 }
@@ -90,7 +103,7 @@ def_EHelper(blt) {
   static rtlreg_t target;
   if ((sword_t)*dsrc1 < (sword_t)*ddest) {
     target = s->pc + imm_sext32(id_src2->imm, 13);
-    IFDEF(CONFIG_EXT_PRINT_JUMP, Log("BLTJ >> " FMT_WORD, target));
+    jump_info(target);
     rtl_jr(s, &target);
   }
 }
@@ -102,7 +115,7 @@ def_EHelper(bge) {
   static rtlreg_t target;
   if ((sword_t)*dsrc1 >= (sword_t)*ddest) {
     target = s->pc + imm_sext32(id_src2->imm, 13);
-    IFDEF(CONFIG_EXT_PRINT_JUMP, Log("BGEJ >> " FMT_WORD, target));
+    jump_info(target);
     rtl_jr(s, &target);
   }
 }
@@ -114,7 +127,7 @@ def_EHelper(bltu) {
   static rtlreg_t target;
   if ((word_t)*dsrc1 < (word_t)*ddest) {
     target = s->pc + imm_sext32(id_src2->imm, 13);
-    IFDEF(CONFIG_EXT_PRINT_JUMP, Log("BLTUJ>> " FMT_WORD, target));
+    jump_info(target);
     rtl_jr(s, &target);
   }
 }
@@ -126,7 +139,7 @@ def_EHelper(bgeu) {
   static rtlreg_t target;
   if ((word_t)*dsrc1 >= (word_t)*ddest) {
     target = s->pc + imm_sext32(id_src2->imm, 13);
-    IFDEF(CONFIG_EXT_PRINT_JUMP, Log("BGEUJ>> " FMT_WORD, target));
+    jump_info(target);
     rtl_jr(s, &target);
   }
 }

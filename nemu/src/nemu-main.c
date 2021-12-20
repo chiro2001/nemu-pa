@@ -30,6 +30,7 @@ int main_parse_args_file(char *filename) {
   assert(size);
   arg[file_size + 1 + filename_length] = '\0';
   char **argv = malloc(sizeof(char *) * 128);
+  memset(argv, 0, sizeof(char *) * 128);
   argv[0] = arg;
   g_argv = argv;
   char *p = p_arg;
@@ -40,7 +41,8 @@ int main_parse_args_file(char *filename) {
       break;
     }
     if (*p == ' ' && *(p + 1)) {
-      *p = '\0';
+      while (*p == ' ') *(p++) = '\0';
+      --p;
       argv[argc++] = p + 1;
     }
     p++;
@@ -53,11 +55,15 @@ int main(int argc, char **argv) {
   if (argc == 1) {
     return main(main_parse_args_file(argv[0]), g_argv);
   }
+  argv = argv ? argv : g_argv;
+  IFDEF(CONFIG_EXT_PRINT_ARGS, {
+    for (int i = 0; argv[i]; i++) printf("%d: %s\n", i, argv[i])
+  });
   /* Initialize the monitor. */
 #ifdef CONFIG_TARGET_AM
   am_init_monitor();
 #else
-  init_monitor(argc, argv ? argv: g_argv);
+  init_monitor(argc, argv);
 #endif
 
   /* Start engine. */

@@ -116,6 +116,9 @@ void init_monitor(int argc, char *argv[]) {
   /* Perform ISA dependent initialization. */
   init_isa();
 
+  /* Init sections info*/
+  IFDEF(CONFIG_EXT_PRINT_SECTIONS, elf_init());
+
   /* Load the image to memory. This will overwrite the built-in image. */
   long img_size = load_img();
 

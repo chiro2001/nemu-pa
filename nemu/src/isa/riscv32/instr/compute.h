@@ -1,7 +1,12 @@
 #include "rtl-basic.h"
 def_EHelper(lui) { rtl_li(s, ddest, id_src1->imm); }
 // auipc rd, immediate    //x[rd] = pc + sext(immediate[31:12] << 12)
-def_EHelper(auipc) { rtl_li(s, ddest, imm_sext32(id_src1->imm, 20) + s->pc); }
+def_EHelper(auipc) { rtl_li(s, ddest, id_src1->imm + s->pc); }
+// def_EHelper(auipc) {
+//   static rtlreg_t target;
+//   target = id_src1->imm;
+//   rtl_li(s, ddest, target + s->pc);
+// }
 def_EHelper(add) { rtl_add(s, ddest, dsrc1, dsrc2); }
 def_EHelper(addi) { rtl_addi(s, ddest, dsrc1, id_src2->imm); }
 def_EHelper(sub) { rtl_sub(s, ddest, dsrc1, dsrc2); }

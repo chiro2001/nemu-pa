@@ -7,6 +7,7 @@
 
 char cwd[128];
 char buf2[512];
+char buf3[512];
 char buf[1024];
 char g_section[64];
 
@@ -31,14 +32,22 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
         if (*p == '.') *p = '\0';
         p++;
       }
+      FILE *f;
+      sprintf(buf, "find $NEMU_HOME/../ -name \"%s.elf\" | head -n 1", buf2);
+      // printf("%s\n", buf);
+      f = popen(buf, "r");
+      int r = fscanf(f, "%s", buf3);
+      assert(r);
+      pclose(f);
       sprintf(buf,
-              "cd $NEMU_HOME/../am-kernels/tests/cpu-tests/build ; echo @"
-              "`riscv64-linux-gnu-readelf %s.elf -s | tail -n +4 | sort -k 2 "
+              "echo @"
+              "`riscv64-linux-gnu-readelf %s -s | grep FUNC | tail -n +4 | sort -k 2 "
               "| awk '{print \"0x\"$2 $0}' | awk '{printf \"%%d %%s\\n\", "
               "strtonum($1), $0}' | awk '$1 > " "%u" " {print $0}' | head -n 1 | awk '{ print $NF }'` ; cd %s",
-              buf2, ref_r->pc, cwd);
-      FILE *f = popen(buf, "r");
-      int r = fscanf(f, "%s", section);
+              buf3, ref_r->pc, cwd);
+      // printf("%s\n", buf);
+      f = popen(buf, "r");
+      r = fscanf(f, "%s", section);
       assert(r);
       pclose(f);
     } else {

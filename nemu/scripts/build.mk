@@ -1,7 +1,11 @@
 .DEFAULT_GOAL = app
 
 # Add necessary options if the target is a shared library
+<<<<<<< HEAD
 ifeq ($(SHARE),1)
+=======
+ifdef SHARE
+>>>>>>> pa2
 SO = -so
 CFLAGS  += -fPIC
 LDFLAGS += -rdynamic -shared -fPIC
@@ -14,6 +18,7 @@ INC_PATH := $(WORK_DIR)/include $(INC_PATH)
 OBJ_DIR  = $(BUILD_DIR)/obj-$(NAME)$(SO)
 BINARY   = $(BUILD_DIR)/$(NAME)$(SO)
 
+<<<<<<< HEAD
 # Compilation flags
 ifeq ($(CC),clang)
 CXX := clang++
@@ -21,11 +26,22 @@ else
 CXX := g++
 endif
 LD := $(CXX)
+=======
+CC ?= gcc
+
+# Compilation flags
+CC := $(CC)
+LD := $(CC)
+>>>>>>> pa2
 INCLUDES = $(addprefix -I, $(INC_PATH))
 CFLAGS  := -O2 -MMD -Wall -Werror $(INCLUDES) $(CFLAGS)
 LDFLAGS := -O2 $(LDFLAGS)
 
+<<<<<<< HEAD
 OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o) $(CXXSRC:%.cc=$(OBJ_DIR)/%.o)
+=======
+OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o)
+>>>>>>> pa2
 
 # Compilation patterns
 $(OBJ_DIR)/%.o: %.c
@@ -34,12 +50,15 @@ $(OBJ_DIR)/%.o: %.c
 	@$(CC) $(CFLAGS) -c -o $@ $<
 	$(call call_fixdep, $(@:.o=.d), $@)
 
+<<<<<<< HEAD
 $(OBJ_DIR)/%.o: %.cc
 	@echo + CXX $<
 	@mkdir -p $(dir $@)
 	@$(CXX) $(CFLAGS) $(CXXFLAGS) -c -o $@ $<
 	$(call call_fixdep, $(@:.o=.d), $@)
 
+=======
+>>>>>>> pa2
 # Depencies
 -include $(OBJS:.o=.d)
 

@@ -111,6 +111,10 @@ config CC_DEBUG
   bool "Enable debug information"
   default n
 
+config CC_AM_DEBUG
+  bool "Enable debug information in AM"
+  default n
+
 config CC_ASAN
   depends on MODE_SYSTEM
   bool "Enable address sanitizer"
@@ -226,4 +230,13 @@ config EXT_PRINT_LOADSAVE
 config EXT_PRINT_ARGS
   bool "Print launch args"
   default n
+config EXT_PRINT_MAKE_CMDS
+  bool "Print cmdlines called by Make"
+  default n
+config EXT_CC_AM_OPT
+  string "CC Option for AM"
+  default "O0"
+config EXT_RISCV_CROSS
+  string "Cross compile tool for riscv"
+  default "riscv32-unknown-elf-"
 endmenu

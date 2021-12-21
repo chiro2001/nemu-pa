@@ -7,43 +7,6 @@ char buf_filepath[512];
 char buf_cmd[1024];
 char g_section[64];
 
-// char *find_section(uint32_t pc) {
-//   char *section = g_section;
-//   if (img_file) {
-//     strcpy(buf_img_file, basename(img_file));
-//     char *p = buf_img_file;
-//     while (*p) {
-//       if (*p == '.') *p = '\0';
-//       p++;
-//     }
-//     FILE *f;
-//     sprintf(buf_filepath, "find $NEMU_HOME/../ -name \"%s.elf\" | head -n 1",
-//             buf_filepath);
-//     // printf("%s\n", buf_img_file);
-//     f = popen(buf_filepath, "r");
-//     int r = fscanf(f, "%s", buf_filepath);
-//     assert(r);
-//     pclose(f);
-//     sprintf(
-//         buf_cmd,
-//         "echo "
-//         "`riscv64-linux-gnu-readelf %s -s | grep FUNC | tail -n +4 | sort -k
-//         2 "
-//         "| awk '{print \"0x\"$2 $0}' | awk '{printf \"%%d %%s\\n\", "
-//         "strtonum($1), $0}' | awk '$1 > %u {print $0}' | head -n 1 | awk '{ "
-//         "print $NF }'`",
-//         buf_filepath, pc);
-//     // printf("%s\n", buf_cmd);
-//     f = popen(buf_cmd, "r");
-//     r = fscanf(f, "%s", section);
-//     assert(r);
-//     pclose(f);
-//   } else {
-//     section = NULL;
-//   }
-//   return section ? section : "[UNKNOWN]";
-// }
-
 /**
  * @brief 从全局变量img_file中拿到当前运行程序的名称
  * @return const char* 名称
@@ -101,7 +64,8 @@ void elf_init_info(const char *filepath) {
   sprintf(buf, "riscv64-linux-gnu-readelf \"%s\" -s | grep FUNC | wc -l",
           filepath);
   FILE *f = popen(buf, "r");
-  fscanf(f, "%d", &line_count);
+  int r = fscanf(f, "%d", &line_count);
+  assert(r);
   sections = malloc(sizeof(SectionNode) * line_count);
   memset(sections, 0, sizeof(SectionNode) * line_count);
   assert(sections);

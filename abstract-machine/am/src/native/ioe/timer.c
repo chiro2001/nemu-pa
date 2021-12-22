@@ -5,7 +5,6 @@
 static struct timeval boot_time = {};
 
 void __am_timer_config(AM_TIMER_CONFIG_T *cfg) {
-  // putstr(__FILE__ ": __am_timer_config\n");
   cfg->present = cfg->has_rtc = true;
 }
 
@@ -26,7 +25,6 @@ void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
   long seconds = now.tv_sec - boot_time.tv_sec;
   long useconds = now.tv_usec - boot_time.tv_usec;
   uptime->us = seconds * 1000000 + (useconds + 500);
-  // printf("uptime->us = %lu\n", uptime->us);
 }
 
 void __am_timer_init() {

@@ -239,4 +239,7 @@ config EXT_CC_AM_OPT
 config EXT_RISCV_CROSS
   string "Cross compile tool for riscv"
   default "riscv32-unknown-elf-"
+config EXT_DEBUG_QEMU_PORT
+  int "run QEMU gdb port"
+  default 3333
 endmenu

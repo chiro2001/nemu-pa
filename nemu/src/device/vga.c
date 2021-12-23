@@ -1,5 +1,9 @@
 #include <common.h>
 #include <device/map.h>
+#include <device/mmio.h>
+#include <device/ioe.h>
+
+#define SYNC_ADDR (VGACTL_ADDR + 4)
 
 #define SCREEN_W (MUXDEF(CONFIG_VGA_SIZE_800x600, 800, 400))
 #define SCREEN_H (MUXDEF(CONFIG_VGA_SIZE_800x600, 600, 300))
@@ -58,6 +62,12 @@ static inline void update_screen() {
 void vga_update_screen() {
   // TODO: call `update_screen()` when the sync register is non-zero,
   // then zero out the sync register
+  // if (io_read(AM_GPU_FBDRAW).sync) {}
+  if (mmio_read(SYNC_ADDR, 1)) {
+    // Log("update_screen");
+    update_screen();
+    mmio_write(SYNC_ADDR, 1, 0);
+  }
 }
 
 void init_vga() {
@@ -72,5 +82,5 @@ void init_vga() {
   vmem = new_space(screen_size());
   add_mmio_map("vmem", CONFIG_FB_ADDR, vmem, screen_size(), NULL);
   IFDEF(CONFIG_VGA_SHOW_SCREEN, init_screen());
-  IFDEF(CONFIG_VGA_SHOW_SCREEN, memset(vmem, 0, screen_size()));
+  IFDEF(CONFIG_VGA_SHOW_SCREEN, memset(vmem, 0x5A, screen_size()));
 }

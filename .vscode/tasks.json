@@ -1,0 +1,155 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build Assembly",
+      "type": "shell",
+      "command": "make",
+      "args": [
+        "asm-run",
+        "ASM=jump2"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/am-kernels/tests/cpu-tests",
+        "env": {
+          "NEMU_HOME": "/home/chiro/ics2021/nemu",
+          "ARCH": "riscv32-nemu",
+          "SIMPLE_MODE": "1",
+          "AM_HOME": "/home/chiro/ics2021/abstract-machine",
+          "DEBUG_VSCODE": "1"
+        }
+      },
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": {
+        "owner": "cpp",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}/nemu"
+        ],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        }
+      }
+    },
+    {
+      "label": "Build Single",
+      "type": "shell",
+      "command": "make",
+      "args": [
+        "run",
+        "ALL=string"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/am-kernels/tests/cpu-tests",
+        "env": {
+          "NEMU_HOME": "/home/chiro/ics2021/nemu",
+          "ARCH": "riscv32-nemu",
+          "SIMPLE_MODE": "1",
+          "AM_HOME": "/home/chiro/ics2021/abstract-machine",
+          "DEBUG_VSCODE": "1"
+        }
+      },
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": {
+        "owner": "cpp",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}/nemu"
+        ],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        }
+      }
+    },
+    {
+      "label": "Build Assembly Regression",
+      "type": "shell",
+      "command": "make",
+      "args": [
+        "asm-reg"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/am-kernels/tests/cpu-tests",
+        "env": {
+          "NEMU_HOME": "/home/chiro/ics2021/nemu",
+          "ARCH": "riscv32-nemu",
+          "SIMPLE_MODE": "1",
+          "AM_HOME": "/home/chiro/ics2021/abstract-machine",
+          "DEBUG_VSCODE": "1"
+        }
+      },
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": {
+        "owner": "cpp",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}/nemu"
+        ],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        }
+      }
+    },
+    {
+      "label": "Launch QEMU",
+      "type": "shell",
+      "command": "make",
+      "args": [
+        "run-qemu"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/am-kernels/kernels/litenes",
+        "env": {
+          "NEMU_HOME": "/home/chiro/ics2021/nemu",
+          "ARCH": "riscv32-nemu",
+          "SIMPLE_MODE": "1",
+          "AM_HOME": "/home/chiro/ics2021/abstract-machine",
+          "DEBUG_VSCODE": "1"
+        }
+      },
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": {
+        "owner": "cpp",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}/nemu"
+        ],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        }
+      }
+    }
+  ]
+}

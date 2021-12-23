@@ -1,0 +1,35 @@
+{
+  "files.associations": {
+    "reg.h": "c",
+    "ifetch.h": "c",
+    "isa-all-instr.h": "c",
+    "decode.h": "c",
+    "utils.h": "c",
+    "common.h": "c",
+    "autoconf.h": "c",
+    "difftest.h": "c",
+    "rtl.h": "c",
+    "trap.h": "c",
+    "klib-macros.h": "c",
+    "am.h": "c",
+    "cstdio": "c",
+    "pwd.h": "c",
+    "cerrno": "c",
+    "cstdarg": "c",
+    "streambuf": "c",
+    "*.tcc": "c",
+    "map.h": "c",
+    "sstream": "c",
+    "stdio.h": "c",
+    "sdl.h": "c",
+    "mmio.h": "c",
+    "system_error": "cpp",
+    "double.h": "c",
+    "ioe.h": "c",
+    "nemu.h": "c"
+  },
+  "C_Cpp.files.exclude": {
+    "**/.vscode": true,
+    "nemu/tools/**": true
+  }
+}

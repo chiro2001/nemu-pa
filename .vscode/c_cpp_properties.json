@@ -1,0 +1,23 @@
+{
+  "configurations": [
+      {
+          "name": "Linux",
+          "includePath": [
+              "${workspaceFolder}/**",
+              "${workspaceFolder}/nemu/include",
+              "${workspaceFolder}/abstract-machine/klib/include",
+              "/usr/include"
+          ],
+          "defines": [
+            "__GUEST_ISA__=riscv32",
+            "__ISA__=riscv32",
+            "__ISA_RISCV32__"
+          ],
+          "compilerPath": "/usr/bin/gcc",
+          "cStandard": "gnu17",
+          "cppStandard": "gnu++14",
+          "intelliSenseMode": "linux-gcc-x64"
+      }
+  ],
+  "version": 4
+}

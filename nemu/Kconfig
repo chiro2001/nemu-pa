@@ -242,4 +242,10 @@ config EXT_RISCV_CROSS
 config EXT_DEBUG_QEMU_PORT
   int "run QEMU gdb port"
   default 3333
+config EXT_VGA_ALWAYS_REFRESH
+  bool "VGA display at any cycle"
+  default y
+config EXT_VGA_COPY_BY_BYTE
+  bool "Copy vmem by byte"
+  default y
 endmenu

@@ -63,11 +63,15 @@ void vga_update_screen() {
   // TODO: call `update_screen()` when the sync register is non-zero,
   // then zero out the sync register
   // if (io_read(AM_GPU_FBDRAW).sync) {}
+#ifndef CONFIG_EXT_VGA_ALWAYS_REFRESH
   if (mmio_read(SYNC_ADDR, 1)) {
+#endif
     // Log("update_screen");
     update_screen();
+#ifndef CONFIG_EXT_VGA_ALWAYS_REFRESH
     mmio_write(SYNC_ADDR, 1, 0);
   }
+#endif
 }
 
 void init_vga() {

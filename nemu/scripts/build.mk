@@ -14,6 +14,8 @@ INC_PATH := $(WORK_DIR)/include $(INC_PATH)
 OBJ_DIR  = $(BUILD_DIR)/obj-$(NAME)$(SO)
 BINARY   = $(BUILD_DIR)/$(NAME)$(SO)
 
+-include $(NEMU_HOME)/include/config/auto.conf
+
 # Compilation flags
 ifeq ($(CC),clang)
 CXX := clang++
@@ -22,7 +24,7 @@ CXX := g++
 endif
 LD := $(CXX)
 INCLUDES = $(addprefix -I, $(INC_PATH))
-CFLAGS  := -O2 -MMD -Wall -Werror $(INCLUDES) $(CFLAGS)
+CFLAGS  := -O2 -MMD -Wall $(if $(CONFIG_EXT_ALL_WARNINGS_AS_ERRORS),-Werror,) $(INCLUDES) $(CFLAGS)
 LDFLAGS := -O2 $(LDFLAGS)
 
 OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o) $(CXXSRC:%.cc=$(OBJ_DIR)/%.o)
@@ -31,12 +33,14 @@ OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o) $(CXXSRC:%.cc=$(OBJ_DIR)/%.o)
 $(OBJ_DIR)/%.o: %.c
 	@echo + CC $<
 	@mkdir -p $(dir $@)
+	@$(if $(CONFIG_EXT_PRINT_MAKE_CMDS),echo $(CC) $(CFLAGS) -c -o $@ $<,)
 	@$(CC) $(CFLAGS) -c -o $@ $<
 	$(call call_fixdep, $(@:.o=.d), $@)
 
 $(OBJ_DIR)/%.o: %.cc
 	@echo + CXX $<
 	@mkdir -p $(dir $@)
+	@$(if $(CONFIG_EXT_PRINT_MAKE_CMDS),echo $(CXX) $(CFLAGS) $(CXXFLAGS) -c -o $@ $<,)
 	@$(CXX) $(CFLAGS) $(CXXFLAGS) -c -o $@ $<
 	$(call call_fixdep, $(@:.o=.d), $@)
 

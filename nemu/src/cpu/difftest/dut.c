@@ -1,4 +1,6 @@
+#ifdef CONFIG_DIFFTEST
 #include <dlfcn.h>
+#endif
 
 #include <isa.h>
 #include <cpu/cpu.h>

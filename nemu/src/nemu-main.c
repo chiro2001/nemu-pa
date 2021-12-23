@@ -11,6 +11,7 @@ int is_exit_status_bad();
 
 char **g_argv = NULL;
 
+#ifndef CONFIG_TARGET_AM
 int main_parse_args_file(char *filename) {
   struct stat sb;
   FILE *fp = NULL;
@@ -49,7 +50,9 @@ int main_parse_args_file(char *filename) {
   }
   return argc;
 }
+#endif
 
+#ifndef CONFIG_TARGET_AM
 int main(int argc, char **argv) {
   /* When no args provided, find EXT_RUN_CONFIG_FILE*/
   if (argc == 1) {
@@ -59,6 +62,9 @@ int main(int argc, char **argv) {
   IFDEF(CONFIG_EXT_PRINT_ARGS, {
     for (int i = 0; argv[i]; i++) printf("%d: %s\n", i, argv[i])
   });
+#else
+int main() {
+#endif
   /* Initialize the monitor. */
 #ifdef CONFIG_TARGET_AM
   am_init_monitor();

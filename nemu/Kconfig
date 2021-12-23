@@ -100,7 +100,7 @@ config CC_OPT
   default "-O1" if CC_O1
   default "-O2" if CC_O2
   default "-O3" if CC_O3
-  default "none"
+  default CC_O3
 
 config CC_LTO
   depends on !TARGET_AM
@@ -126,7 +126,7 @@ menu "Testing and Debugging"
 
 config TRACE
   bool "Enable tracer"
-  default y
+  default n
 
 config TRACE_START
   depends on TRACE
@@ -141,7 +141,7 @@ config TRACE_END
 config ITRACE
   depends on TRACE && TARGET_NATIVE_ELF && ENGINE_INTERPRETER
   bool "Enable instruction tracer"
-  default y
+  default n
 
 config ITRACE_COND
   depends on ITRACE
@@ -220,22 +220,22 @@ config EXT_RUN_CONFIG_FILE
   default ".nemu_run_args"
 config EXT_PRINT_JUMP
   bool "Print jump info"
-  default y
+  default n
 config EXT_PRINT_SECTIONS
   bool "Load & print section info"
-  default y
+  default n
 config EXT_PRINT_LOADSAVE
   bool "Print load & save"
-  default y
+  default n
 config EXT_PRINT_ARGS
   bool "Print launch args"
   default n
 config EXT_PRINT_MAKE_CMDS
   bool "Print cmdlines called by Make"
-  default n
+  default y
 config EXT_CC_AM_OPT
   string "CC Option for AM"
-  default "O0"
+  default "O3"
 config EXT_RISCV_CROSS
   string "Cross compile tool for riscv"
   default "riscv32-unknown-elf-"
@@ -244,8 +244,11 @@ config EXT_DEBUG_QEMU_PORT
   default 3333
 config EXT_VGA_ALWAYS_REFRESH
   bool "VGA display at any cycle"
-  default y
+  default n
 config EXT_VGA_COPY_BY_BYTE
   bool "Copy vmem by byte"
-  default y
+  default n
+config EXT_ALL_WARNINGS_AS_ERRORS
+  bool "Treat all warnings as errors"
+  default n
 endmenu

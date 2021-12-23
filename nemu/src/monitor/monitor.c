@@ -148,11 +148,16 @@ static long load_img() {
 }
 
 void am_init_monitor() {
+  ioe_init();
   init_rand();
   init_mem();
+  Log("init_mem() done");
   init_isa();
+  Log("init_isa() done");
   load_img();
+  Log("init_img() done");
   IFDEF(CONFIG_DEVICE, init_device());
+  IFDEF(CONFIG_DEVICE, Log("init_device() done"));
   welcome();
 }
 #endif

@@ -46,7 +46,7 @@ int strcmp(const char *s1, const char *s2) {
   assert(s2);
   while (*s1 && *s2) {
     if (*s1 < *s2) {
-      printf("%c < %c, ret -1\n", *s1, *s2);
+      // printf("%c < %c, ret -1\n", *s1, *s2);
       return -1;
     }
     if (*s1 > *s2) return 1;
@@ -96,12 +96,15 @@ int memcmp(const void *s1, const void *s2, size_t n) {
   assert(s2);
   const uint8_t *p = s2;
   const uint8_t *s = s1;
-  while (*s && *p && p - s > n) {
+  while (*s && *p && n) {
+    // printf("memcmp[%u]: %u-%u\n", n, *s, *p);
     if (*s < *p) return -1;
     if (*s > *p) return 1;
-    s1++;
+    s++;
     p++;
+    n--;
   }
+  if (!n) return 0;
   if (*s) return -1;
   if (*p) return 1;
   return 0;

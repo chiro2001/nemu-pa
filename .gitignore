@@ -1,5 +1,7 @@
 *.*
 *
+!*.json
+!.vscode/
 !*/
 !/nemu/*
 !/nexus-am/*
@@ -9,6 +11,5 @@
 !README.md
 !.gitignore
 !init.sh
-!.vscode
 /fceux-am
 /am-kernels

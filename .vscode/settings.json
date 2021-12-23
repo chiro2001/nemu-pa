@@ -26,7 +26,8 @@
     "system_error": "cpp",
     "double.h": "c",
     "ioe.h": "c",
-    "nemu.h": "c"
+    "nemu.h": "c",
+    "cpu.h": "c"
   },
   "C_Cpp.files.exclude": {
     "**/.vscode": true,

@@ -33,8 +33,10 @@ static void init_keymap() {
 #define KEY_QUEUE_LEN 1024
 static int key_queue[KEY_QUEUE_LEN] = {};
 static int key_f = 0, key_r = 0;
+uint8_t skipped_first_esc = false;
 
 static void key_enqueue(uint32_t am_scancode) {
+  // Log("key enqueue: %d", (int)am_scancode);
   key_queue[key_r] = am_scancode;
   key_r = (key_r + 1) % KEY_QUEUE_LEN;
   Assert(key_r != key_f, "key queue overflow!");
@@ -50,6 +52,12 @@ static uint32_t key_dequeue() {
 }
 
 void send_key(uint8_t scancode, bool is_keydown) {
+  // T don't know why....
+  // Log("(uint8_t scancode, bool is_keydown) = (%u, %s)", scancode, is_keydown ? "true" : "false");
+  if (scancode == 41 && is_keydown && !skipped_first_esc) {
+    return;
+  }
+  skipped_first_esc = true;
   if (nemu_state.state == NEMU_RUNNING && keymap[scancode] != _KEY_NONE) {
     uint32_t am_scancode = keymap[scancode] | (is_keydown ? KEYDOWN_MASK : 0);
     key_enqueue(am_scancode);

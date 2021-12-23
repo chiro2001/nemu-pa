@@ -1,6 +1,6 @@
 #include <common.h>
-#include <utils.h>
 #include <device/alarm.h>
+#include <utils.h>
 #ifndef CONFIG_TARGET_AM
 #include <SDL2/SDL.h>
 #endif
@@ -45,7 +45,8 @@ void device_update() {
         break;
       }
 #endif
-      default: break;
+      default:
+        break;
     }
   }
 #endif
@@ -54,7 +55,8 @@ void device_update() {
 void sdl_clear_event_queue() {
 #ifndef CONFIG_TARGET_AM
   SDL_Event event;
-  while (SDL_PollEvent(&event));
+  while (SDL_PollEvent(&event))
+    ;
 #endif
 }
 

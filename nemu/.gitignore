@@ -1,5 +1,8 @@
 *.*
 *
+!*.json
+.config
+.config.*
 !*/
 !Makefile
 !*.mk

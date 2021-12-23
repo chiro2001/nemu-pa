@@ -8,16 +8,22 @@
 
 static uint8_t *serial_base = NULL;
 
-char g_serial_buf[512];
+#define SERIAL_BUF_SIZE 1024
+
+char g_serial_buf[SERIAL_BUF_SIZE];
 char *g_serial_p;
 
 void serial_putc_buffed(char ch) {
-  *(g_serial_p++) = ch == '\n' ? '\0' : ch;
-  if ((ch == '\0' || ch == '\n') && *g_serial_buf) {
-      // printf("\t" ASNI_FMT(" %s ", ASNI_FG_BLACK ASNI_BG_GREEN) "\n", g_serial_buf);
+  if (g_serial_p - g_serial_buf < SERIAL_BUF_SIZE)
+    *(g_serial_p++) = ch == '\n' ? '\0' : ch;
+  if ((ch == '\0' || ch == '\n')) {
+    if (*g_serial_buf) {
       printf(ASNI_FMT("%s", ASNI_FG_BLACK ASNI_BG_GREEN) "\n", g_serial_buf);
-      g_serial_p = g_serial_buf;
-      memset(g_serial_buf, 0, sizeof(g_serial_buf));
+    } else {
+      printf(ASNI_FMT("%s", ASNI_FG_BLACK ASNI_BG_GREEN) "\n", "[EMPTY STR]");
+    }
+    g_serial_p = g_serial_buf;
+    memset(g_serial_buf, 0, sizeof(g_serial_buf));
   }
 }
 

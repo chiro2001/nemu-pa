@@ -27,16 +27,21 @@ int atoi(const char *nptr) {
   return x;
 }
 
-#ifndef CONFIG_MBASE
-#define CONFIG_MBASE 0x80000000
-#endif
-#ifndef CONFIG_MSIZE
-#define CONFIG_MSIZE 0x8000000
-#endif
+// #include <generated/autoconf.h>
+#include "/home/chiro/ics2021/nemu/include/generated/autoconf.h"
+
+// #ifndef CONFIG_MBASE
+// #define CONFIG_MBASE 0x80000000
+// #endif
+// #ifndef CONFIG_MSIZE
+// #define CONFIG_MSIZE 0x8000000
+// #endif
 
 void *malloc(size_t size) {
   // TODO: Memory manager
-  static uint8_t *addr = (uint8_t *)(CONFIG_MBASE + (CONFIG_MSIZE / 2));
+  // static uint8_t *addr = (uint8_t *)(CONFIG_MBASE + (CONFIG_MSIZE / 2));
+  // static uint8_t *addr = (uint8_t *)(CONFIG_MBASE + 0x80000);
+  static uint8_t *addr = (uint8_t *)(CONFIG_MBASE);
   addr += size;
   return addr;
 }

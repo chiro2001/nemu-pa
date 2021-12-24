@@ -113,7 +113,7 @@ size_t find_section_inner(uint32_t pc, size_t left, size_t right) {
  */
 const char *find_section(uint32_t pc) {
   // assert(sections);
-  if (!sections) return "UNKNOWN";
+  if (!sections) return "--";
   if (pc < sections[0].addr) return "HEAD";
   if (pc >= sections_tail->addr) return "TAIL";
   return sections[find_section_inner(pc, 0, (sections_tail - sections - 1))]

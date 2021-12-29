@@ -29,7 +29,9 @@
     "nemu.h": "c",
     "cpu.h": "c",
     "dlfcn.h": "c",
-    "klib.h": "c"
+    "klib.h": "c",
+    "typeinfo": "c",
+    "isa-def.h": "c"
   },
   "C_Cpp.files.exclude": {
     "**/.vscode": true,

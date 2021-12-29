@@ -71,6 +71,18 @@ typedef struct {
   } instr;
 } riscv32_ISADecodeInfo;
 
+#ifndef RISCV_CSR_REG_COUNT
+#define RISCV_CSR_REG_COUNT 32
+#endif
+typedef struct regs_csr_type {
+  uint32_t addr;
+  rtlreg_t val;
+  char name[32];
+} regs_csr_t;
+extern regs_csr_t regs_csr_map[RISCV_CSR_REG_COUNT];
+
 #define isa_mmu_check(vaddr, len, type) (MMU_DIRECT)
+
+regs_csr_t *csr_find(uint32_t addr);
 
 #endif

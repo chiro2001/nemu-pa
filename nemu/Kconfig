@@ -254,4 +254,7 @@ config EXT_ALL_WARNINGS_AS_ERRORS
 config EXT_NEWLIB_PATH
   string "Specific newlib installation path"
   default "/home/chiro/Downloads/newlib-3.2.0/build/install/riscv32-unknown-elf"
+config EXT_COMPILE_VERBOSE
+  bool "--verbose"
+  default n
 endmenu

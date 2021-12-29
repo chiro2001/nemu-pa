@@ -11,7 +11,7 @@ LDFLAGS       += -melf32lriscv
 
 LDFLAGS       += -lm -lc -lg -lgloss -lnosys -lsim -static -nostdlib -L/home/chiro/Downloads/newlib-3.2.0/build/install/riscv32-unknown-elf/lib -I/home/chiro/Downloads/newlib-3.2.0/build/install/riscv32-unknown-elf/include
 # LDFLAGS				+= -L/home/chiro/Downloads/newlib-3.2.0/build/riscv32-unknown-elf/newlib/libc/stdio -l_a-printf --verbose
-LDFLAGS				+= --verbose
+# LDFLAGS				+= --verbose
 
 -include $(NEMU_HOME)/include/config/auto.conf
 

@@ -95,10 +95,16 @@ CFLAGS   += -$(CONFIG_EXT_CC_AM_OPT) -MMD -Wall $(if $(CONFIG_EXT_ALL_WARNINGS_A
             -D__PLATFORM__=$(PLATFORM) -D__PLATFORM_$(shell echo $(PLATFORM) | tr a-z A-Z | tr - _) \
             -DARCH_H=\"arch/$(ARCH).h\" \
             -fno-asynchronous-unwind-tables -fno-builtin -fno-stack-protector \
-            -Wno-main -U_FORTIFY_SOURCE \
-						-lgcc -lc -lm -lgloss -lnosys -lsim --verbose
-CXXFLAGS +=  $(CFLAGS) -ffreestanding -fno-rtti -fno-exceptions -lgcc -lc -lm -lgloss -lnosys -lsim --verbose
+            -Wno-main -U_FORTIFY_SOURCE
+CXXFLAGS +=  $(CFLAGS) -ffreestanding -fno-rtti -fno-exceptions
 ASFLAGS  += -MMD $(INCFLAGS)
+
+ifdef CONFIG_EXT_COMPILE_VERBOSE
+CFLAGS 		+= --verbose
+CXXFLAGS 	+= --verbose
+ASFLAGS		+= --verbose
+LDFLAGS		+= --verbose
+endif
 
 ifdef CONFIG_EXT_NEWLIB_PATH
 NEWLIB_PATH :=$(CONFIG_EXT_NEWLIB_PATH)

@@ -1,3 +1,4 @@
+#include <generated/autoconf.h>
 #ifdef CONFIG_DIFFTEST
 #include <dlfcn.h>
 #endif

@@ -1,3 +1,4 @@
+#include <common.h>
 #include <cpu/cpu.h>
 
 void sdb_mainloop();

@@ -80,6 +80,7 @@ typedef struct regs_csr_type {
   char name[32];
 } regs_csr_t;
 extern regs_csr_t regs_csr_map[RISCV_CSR_REG_COUNT];
+extern regs_csr_t *csr_mcause, *csr_mepc, *csr_mtvec, *csr_mstatus;
 
 #define isa_mmu_check(vaddr, len, type) (MMU_DIRECT)
 

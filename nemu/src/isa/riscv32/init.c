@@ -21,6 +21,7 @@ static void restart() {
 }
 
 regs_csr_t regs_csr_map[RISCV_CSR_REG_COUNT];
+regs_csr_t *csr_mcause, *csr_mepc, *csr_mtvec, *csr_mstatus;
 int regs_csr_tail = 0;
 
 void csr_insert(regs_csr_t t) {
@@ -77,6 +78,10 @@ void init_csr() {
       }
     }
   }
+  csr_mstatus = csr_find(0x300);
+  csr_mepc = csr_find(0x341);
+  csr_mcause = csr_find(0x342);
+  csr_mtvec = csr_find(0x305);
   // test
   // regs_csr_t *target = NULL;
   // target = csr_find(0x001);

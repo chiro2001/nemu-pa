@@ -4,8 +4,8 @@
 #include <stdint.h>
 
 struct Context {
-  // TODO: fix the order of these members to match trap.S
-  uintptr_t mepc, mcause, gpr[32], mstatus;
+  // fixed the order of these members to match trap.S
+  uintptr_t gpr[32], mcause, mstatus, mepc;
   void *pdir;
 };
 

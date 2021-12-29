@@ -1,5 +1,9 @@
 #include <common.h>
 
+#ifndef HAS_CTE
+#define HAS_CTE
+#endif
+
 void init_mm(void);
 void init_device(void);
 void init_ramdisk(void);
@@ -9,7 +13,7 @@ void init_proc(void);
 
 int main() {
   extern const char logo[];
-  printf("%s", logo);
+  // printf("%s", logo);
   Log("'Hello World!' from Nanos-lite");
   Log("Build time: %s, %s", __TIME__, __DATE__);
 

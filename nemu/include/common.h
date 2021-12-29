@@ -34,4 +34,8 @@ typedef uint16_t ioaddr_t;
 
 extern char *img_file;
 
+#ifndef HAS_CTE
+#define HAS_CTE
+#endif
+
 #endif

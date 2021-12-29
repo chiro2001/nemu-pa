@@ -1,6 +1,7 @@
 #include <common.h>
 
 static Context* do_event(Event e, Context* c) {
+  Log("Event: %d", e.event);
   switch (e.event) {
     default: panic("Unhandled event ID = %d", e.event);
   }
@@ -9,6 +10,7 @@ static Context* do_event(Event e, Context* c) {
 }
 
 void init_irq(void) {
+  Log("init_irq");
   Log("Initializing interrupt/exception handler...");
   cte_init(do_event);
 }

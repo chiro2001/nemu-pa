@@ -1,6 +1,7 @@
 #include <am.h>
 #include <riscv/riscv.h>
 #include <klib.h>
+#include <arch/riscv32-nemu.h>
 
 static Context* (*user_handler)(Event, Context*) = NULL;
 
@@ -35,6 +36,9 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
 }
 
 void yield() {
+  // printf("yield!\n");
+  // putch("!");
+  // putch("\n");
   asm volatile("li a7, -1; ecall");
 }
 

@@ -14,6 +14,7 @@ def_EHelper(csrrw) {
   Assert(csr, "Unsupported CSR: " FMT_WORD, id_src2->imm);
   t = csr->val;
   csr->val = *dsrc1;
+  Log("write: " FMT_WORD, csr->val);
   *ddest = t;
 }
 // t = CSRs[csr]; CSRs[csr] = t | x[rs1]; x[rd] = t
@@ -64,3 +65,10 @@ def_EHelper(csrrci) {
   csr->val = ~id_src1->imm & t;
   *ddest = t;
 }
+
+def_EHelper(ecall) {
+  Log("ecall now");
+  isa_raise_intr(1, 0);
+}
+
+def_EHelper(ebreak) {}

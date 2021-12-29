@@ -95,6 +95,7 @@ void elf_init_info(const char *filepath) {
  * @return size_t 段index
  */
 size_t find_section_inner(uint32_t pc, size_t left, size_t right) {
+  if (left == right || left + 1 == right) return left;
   size_t mid = (left + right) / 2;
   if (sections[mid].addr <= pc && sections[mid + 1].addr > pc) {
     return mid;

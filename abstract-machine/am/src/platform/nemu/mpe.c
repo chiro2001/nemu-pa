@@ -4,7 +4,8 @@
 
 bool mpe_init(void (*entry)()) {
   entry();
-  panic("MPE entry returns");
+  // panic("MPE entry returns");
+  return true;
 }
 
 int cpu_count() { return 1; }

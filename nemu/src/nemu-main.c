@@ -60,7 +60,7 @@ int main(int argc, char **argv) {
   }
   argv = argv ? argv : g_argv;
   IFDEF(CONFIG_EXT_PRINT_ARGS, {
-    for (int i = 0; argv[i]; i++) printf("%d: %s\n", i, argv[i])
+    for (int i = 0; argv[i]; i++) printf("ARG %d: %s\n", i, argv[i])
   });
 #else
 int main() {

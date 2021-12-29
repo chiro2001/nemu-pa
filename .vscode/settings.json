@@ -28,7 +28,8 @@
     "ioe.h": "c",
     "nemu.h": "c",
     "cpu.h": "c",
-    "dlfcn.h": "c"
+    "dlfcn.h": "c",
+    "klib.h": "c"
   },
   "C_Cpp.files.exclude": {
     "**/.vscode": true,

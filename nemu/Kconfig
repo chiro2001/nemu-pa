@@ -251,4 +251,7 @@ config EXT_VGA_COPY_BY_BYTE
 config EXT_ALL_WARNINGS_AS_ERRORS
   bool "Treat all warnings as errors"
   default n
+config EXT_NEWLIB_PATH
+  string "Specific newlib installation path"
+  default "/home/chiro/Downloads/newlib-3.2.0/build/install/riscv32-unknown-elf"
 endmenu

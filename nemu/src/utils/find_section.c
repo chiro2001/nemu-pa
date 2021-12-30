@@ -113,12 +113,19 @@ size_t find_section_inner(uint32_t pc, size_t left, size_t right) {
  * @return const char* 段名称
  */
 const char *find_section(uint32_t pc) {
-  // assert(sections);
+  static char buf[64];
   if (!sections) return "--";
   if (pc < sections[0].addr) return "HEAD";
   if (pc >= sections_tail->addr) return "TAIL";
-  return sections[find_section_inner(pc, 0, (sections_tail - sections - 1))]
-      .name;
+  SectionNode *t =
+      &sections[find_section_inner(pc, 0, (sections_tail - sections - 1))];
+  if (pc != t->addr)
+    sprintf(buf, "%s+0x%x", t->name, (pc - t->addr));
+  else
+    sprintf(buf, "<%s>", t->name);
+  // return sections[find_section_inner(pc, 0, (sections_tail - sections - 1))]
+  //     .name;
+  return buf;
 }
 
 /**

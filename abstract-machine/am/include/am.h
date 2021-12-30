@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include ARCH_H // this macro is defined in $CFLAGS
                 // examples: "arch/x86-qemu.h", "arch/native.h", ...
+// #include <stdatomic.h>
 
 // Memory protection flags
 #define MMAP_NONE  0x00000000 // no access
@@ -72,6 +73,11 @@ Context *ucontext    (AddrSpace *as, Area kstack, void *entry);
 bool     mpe_init    (void (*entry)());
 int      cpu_count   (void);
 int      cpu_current (void);
+// typedef struct {
+//   int __val;
+//   int __flag;
+// } atomic_type;
+// int      atomic_xchg (atomic_type *addr, int newval);
 int      atomic_xchg (int *addr, int newval);
 
 #ifdef __cplusplus

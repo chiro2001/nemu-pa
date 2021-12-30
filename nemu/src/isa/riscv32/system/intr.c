@@ -14,7 +14,6 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
   csr_mepc->val = cpu.pc;
   Log("save: " FMT_WORD, csr_mepc->val);
   csr_mcause->val = NO;
-  cpu.pc = csr_mtvec->val;
   Log("load: " FMT_WORD, csr_mtvec->val);
   return csr_mtvec->val;
 }

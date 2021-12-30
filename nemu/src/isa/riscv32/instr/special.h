@@ -67,8 +67,10 @@ def_EHelper(csrrci) {
 }
 
 def_EHelper(ecall) {
+  static rtlreg_t target;
   Log("ecall now");
-  isa_raise_intr(1, 0);
+  target = isa_raise_intr(1, 0);
+  rtl_jr(s, &target);
 }
 
 def_EHelper(ebreak) {}

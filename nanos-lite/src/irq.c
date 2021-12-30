@@ -10,7 +10,6 @@ static Context* do_event(Event e, Context* c) {
 }
 
 void init_irq(void) {
-  Log("init_irq");
   Log("Initializing interrupt/exception handler...");
   cte_init(do_event);
 }

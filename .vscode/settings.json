@@ -33,7 +33,9 @@
     "typeinfo": "c",
     "isa-def.h": "c",
     "riscv.h": "c",
-    "riscv32-nemu.h": "c"
+    "riscv32-nemu.h": "c",
+    "isa.h": "c",
+    "stdatomic.h": "c"
   },
   "C_Cpp.files.exclude": {
     "**/.vscode": true,

@@ -67,6 +67,26 @@ void init_csr() {
   CSRI(0x341, mepc);
   CSRI(0x342, mcause);
   CSRI(0x305, mtvec);
+
+  CSRI(0x104, unknown1);
+  CSRI(0x144, unknown2);
+  CSRI(0x100, unknown3);
+
+  CSRI(0x001, fflags);
+  CSRI(0x002, frm);
+  CSRI(0x003, fcsr);
+  CSRI(0x301, misa);
+  CSRI(0x304, mie);
+  CSRI(0x340, mscratch);
+  CSRI(0x343, mtval);
+  CSRI(0x344, mip);
+  CSRI(0xb00, mcycle);
+  CSRI(0xb80, mcycleh);
+  CSRI(0xb82, minstret);
+  CSRI(0xf11, mvendorid);
+  CSRI(0xf12, marchid);
+  CSRI(0xf13, mmimpid);
+  CSRI(0xf14, mhartid);
   // sort for index
   regs_csr_t t;
   for (int i = 0; i < regs_csr_tail; i++) {

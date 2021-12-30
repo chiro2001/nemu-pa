@@ -1,3 +1,4 @@
+#include <klib.h>
 #include <stdio.h>
 
 int _write(int file, char *ptr, int len) {
@@ -8,4 +9,3 @@ int _write(int file, char *ptr, int len) {
   return len;
 }
 
-#include <klib.h>

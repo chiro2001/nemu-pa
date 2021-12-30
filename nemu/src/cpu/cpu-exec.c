@@ -28,7 +28,8 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #endif
   if (ITRACE_COND) log_write("%s\n", _this->logbuf);
 #endif
-  if (g_print_step IFDEF(CONFIG_ITRACE, || true)) {
+  extern bool log_enable();
+  if ((g_print_step IFDEF(CONFIG_ITRACE, || true)) && log_enable()) {
     // IFDEF(CONFIG_ITRACE, puts(_this->logbuf));
     IFDEF(CONFIG_ITRACE, Log("%s", _this->logbuf));
   }
@@ -73,7 +74,7 @@ void fetch_decode(Decode *s, vaddr_t pc) {
   s->EHelper = g_exec_table[idx];
 #ifdef CONFIG_TRACE
   char *p = s->logbuf;
-  p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
+  p += snprintf(p, sizeof(s->logbuf), "%07d " FMT_WORD ":", (int)g_nr_guest_instr, s->pc);
   int ilen = s->snpc - s->pc;
   int i;
   uint8_t *instr = (uint8_t *)&s->isa.instr.val;

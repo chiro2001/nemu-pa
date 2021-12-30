@@ -35,16 +35,21 @@ def_EHelper(slti) {
 def_EHelper(sltu) { rtl_li(s, ddest, *dsrc1 < *dsrc2 ? 1 : 0); }
 def_EHelper(sltiu) { rtl_li(s, ddest, *dsrc1 < id_src2->imm ? 1 : 0); }
 
-#define jump_info(target)                                                   \
-  do {                                                                      \
-    static rtlreg_t last = 0;                                               \
-    if (last != target) {                                                   \
-      IFDEF(CONFIG_EXT_PRINT_JUMP,                                          \
-            MUXDEF(CONFIG_EXT_PRINT_SECTIONS,                               \
-                   Log("\t" FMT_WORD " @%s", target, find_section(target)), \
-                   Log("\t" FMT_WORD, target)));                            \
-    }                                                                       \
-    last = target;                                                          \
+#define jump_info(target)                                                      \
+  do {                                                                         \
+    extern uint64_t g_nr_guest_instr;                                          \
+    static rtlreg_t last = 0;                                                  \
+    if (last != target) {                                                      \
+      const char *s = find_section(target);                                    \
+      if (*s == '<' IFDEF(CONFIG_EXT_PRINT_JUMP_MORE, || true)) {              \
+        IFDEF(CONFIG_EXT_PRINT_JUMP,                                           \
+              MUXDEF(CONFIG_EXT_PRINT_SECTIONS,                                \
+                     Log("\t%07d " FMT_WORD " @%s", (int)g_nr_guest_instr,     \
+                         target, s),                                           \
+                     Log("\t%07d " FMT_WORD, (int)g_nr_guest_instr, target))); \
+        last = target;                                                         \
+      }                                                                        \
+    }                                                                          \
   } while (0)
 
 /**

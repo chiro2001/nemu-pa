@@ -149,6 +149,15 @@ config ITRACE_COND
   default "true"
 
 
+config EXT_PRINT_JUMP
+  bool "Jump TRACE"
+  default n
+
+config EXT_PRINT_JUMP_MORE
+  bool "Jump TRACE disp every jump"
+  default n
+
+
 config DIFFTEST
   depends on TARGET_NATIVE_ELF
   bool "Enable differential testing"
@@ -218,9 +227,6 @@ comment "Added by Chiro"
 config EXT_RUN_CONFIG_FILE
   string "Default config file to read when no args provided"
   default ".nemu_run_args"
-config EXT_PRINT_JUMP
-  bool "Print jump info"
-  default n
 config EXT_PRINT_SECTIONS
   bool "Load & print section info"
   default n

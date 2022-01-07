@@ -19,4 +19,4 @@ bool log_enable() {
 }
 
 char log_bytebuf[50] = {};
-char log_asmbuf[128] = {};
+char log_asmbuf[168] = {};

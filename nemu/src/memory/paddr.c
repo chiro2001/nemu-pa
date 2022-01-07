@@ -1,14 +1,14 @@
+#include <device/mmio.h>
 #include <memory/host.h>
 #include <memory/paddr.h>
-#include <device/mmio.h>
 
-#if   defined(CONFIG_TARGET_AM)
+#if defined(CONFIG_TARGET_AM)
 static uint8_t *pmem = NULL;
 #else
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 #endif
 
-uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
+uint8_t *guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 static word_t pmem_read(paddr_t addr, int len) {
@@ -20,14 +20,14 @@ static void pmem_write(paddr_t addr, int len, word_t data) {
 }
 
 void init_mem() {
-#if   defined(CONFIG_TARGET_AM)
+#if defined(CONFIG_TARGET_AM)
   pmem = malloc(CONFIG_MSIZE);
   assert(pmem);
 #endif
 #ifdef CONFIG_MEM_RANDOM
   uint32_t *p = (uint32_t *)pmem;
   int i;
-  for (i = 0; i < (int) (CONFIG_MSIZE / sizeof(p[0])); i ++) {
+  for (i = 0; i < (int)(CONFIG_MSIZE / sizeof(p[0])); i++) {
     p[i] = rand();
   }
 #endif
@@ -36,11 +36,18 @@ void init_mem() {
 }
 
 word_t paddr_read(paddr_t addr, int len) {
-  if (likely(in_pmem(addr))) return pmem_read(addr, len);
-  else return mmio_read(addr, len);
+  if (likely(in_pmem(addr))) {
+    // Log("read pmem: @" FMT_WORD ", %d", addr, len);
+    return pmem_read(addr, len);
+  } else {
+    // Log("read mmio: @" FMT_WORD ", %d", addr, len);
+    return mmio_read(addr, len);
+  }
 }
 
 void paddr_write(paddr_t addr, int len, word_t data) {
-  if (likely(in_pmem(addr))) pmem_write(addr, len, data);
-  else mmio_write(addr, len, data);
+  if (likely(in_pmem(addr)))
+    pmem_write(addr, len, data);
+  else
+    mmio_write(addr, len, data);
 }

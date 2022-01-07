@@ -15,6 +15,7 @@ const char *name_from_img_file() {
   static char buf[128];
   if (img_file) {
     strcpy(buf, basename(img_file));
+    if (strcmp(buf, "Image") == 0) return buf;
     char *p = buf;
     while (*p) {
       if (*p == '.') *p = '\0';
@@ -61,7 +62,9 @@ void elf_init_info(const char *filepath) {
   int line_count = 0;
   char buf_line_number[32], buf_addr[12], buf_unknown[12], buf_type[12],
       buf_area[24], buf_type2[32], buf_1[2], buf_name[32];
-  sprintf(buf, "riscv64-linux-gnu-readelf \"%s\" -s | grep FUNC | wc -l",
+  // sprintf(buf, "riscv64-linux-gnu-readelf \"%s\" -s | grep FUNC | wc -l",
+  //         filepath);
+  sprintf(buf, "riscv64-linux-gnu-readelf \"%s\" -s | grep \"FUNC\\|NOTYPE\" | wc -l",
           filepath);
   FILE *f = popen(buf, "r");
   int r = fscanf(f, "%d", &line_count);
@@ -70,7 +73,9 @@ void elf_init_info(const char *filepath) {
   memset(sections, 0, sizeof(SectionNode) * line_count);
   assert(sections);
   sections_tail = sections;
-  sprintf(buf, "riscv64-linux-gnu-readelf \"%s\" -s | grep FUNC | sort -k 2",
+  // sprintf(buf, "riscv64-linux-gnu-readelf \"%s\" -s | grep FUNC | sort -k 2",
+  //         filepath);
+  sprintf(buf, "riscv64-linux-gnu-readelf \"%s\" -s | grep \"FUNC\\|NOTYPE\" | sort -k 2",
           filepath);
   f = popen(buf, "r");
   while (fgets(line, 128, f)) {
@@ -78,12 +83,25 @@ void elf_init_info(const char *filepath) {
     int ret =
         sscanf(line, "%s%s%s%s%s%s%s%s", buf_line_number, buf_addr, buf_unknown,
                buf_type, buf_area, buf_type2, buf_1, buf_name);
-    Assert(ret == 8, "sscanf for elf info should be 8, ret = %d", ret);
+    // Assert(ret == 8, "sscanf for elf info should be 8, ret = %d", ret);
+    if (ret != 8) continue;
     strcpy(sections_tail->name, buf_name);
     sscanf(buf_addr, "%x", &sections_tail->addr);
+#define CONFIG_READELF_OFFSET 0xc0000040
+    if (sections_tail->addr >= CONFIG_READELF_OFFSET)
+      sections_tail->addr -= CONFIG_READELF_OFFSET;
+    else
+      continue;
+    sections_tail->addr += CONFIG_MBASE;
     sections_tail++;
   }
   sections_tail--;
+  SectionNode *p = sections;
+  size_t p_len = 100;
+  while (p != sections_tail && (p_len--)) {
+    Log(FMT_WORD " %s", p->addr, p->name);
+    p++;
+  }
   pclose(f);
 }
 
@@ -134,7 +152,12 @@ const char *find_section(uint32_t pc) {
 void elf_init() {
   const char *name = name_from_img_file();
   assert(name);
-  const char *path = elf_find_path(name);
+  const char *path = NULL;
+  if (strcmp(name, "Image") == 0) {
+    path = "/home/chiro/Downloads/linux-5.4.168/vmlinux";
+  } else {
+    path = elf_find_path(name);
+  }
   assert(path);
   elf_init_info(path);
 }

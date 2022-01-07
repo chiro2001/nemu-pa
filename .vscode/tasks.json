@@ -45,10 +45,11 @@
       "type": "shell",
       "command": "make",
       "args": [
-        "run"
+        "run",
+        "IMG=/home/chiro/Downloads/linux-5.4.168/arch/riscv/boot/Image"
       ],
       "options": {
-        "cwd": "${workspaceFolder}/am-kernels/kernels/thread-os",
+        "cwd": "${workspaceFolder}/nemu",
         "env": {
           "NEMU_HOME": "/home/chiro/ics2021/nemu",
           "ARCH": "riscv32-nemu",

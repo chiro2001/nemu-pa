@@ -7,4 +7,15 @@ submit:
 	git gc
 	STUID=$(STUID) STUNAME=$(STUNAME) bash -c "$$(curl -s http://jyywiki.cn/static/submit.sh)"
 
-.PHONY: default submit
+MKFILES := $(shell find . -name "Makefile" | xargs -I {} echo {} | grep -v "tools" | grep -v "\./Makefile")
+
+$(MKFILES): %
+	echo %, $<
+
+clean: $(MKFILES)
+	@echo $(MKFILES)
+	# find . -name "Makefile" | xargs -I {} echo {} | grep -v "tools" | grep -v "\./Makefile" | xargs -I {} echo {}
+	# find . -name "Makefile" | xargs -I {} echo {} | grep -v "tools" | grep -v "\./Makefile" | xargs -I {} make -f {} clean
+
+
+.PHONY: default submit clean

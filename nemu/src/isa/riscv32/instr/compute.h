@@ -8,7 +8,10 @@ def_EHelper(auipc) { rtl_li(s, ddest, id_src1->imm + s->pc); }
 //   rtl_li(s, ddest, target + s->pc);
 // }
 def_EHelper(add) { rtl_add(s, ddest, dsrc1, dsrc2); }
-def_EHelper(addi) { rtl_addi(s, ddest, dsrc1, id_src2->imm); }
+def_EHelper(addi) { 
+  // Log("addi: x[sr1] + sr2.imm = " FMT_WORD " + " FMT_WORD " = " FMT_WORD, *dsrc1, id_src2->imm, *dsrc1 + id_src2->imm);
+  rtl_addi(s, ddest, dsrc1, id_src2->imm);
+  }
 def_EHelper(sub) { rtl_sub(s, ddest, dsrc1, dsrc2); }
 def_EHelper(xor) { rtl_xor(s, ddest, dsrc1, dsrc2); }
 def_EHelper(xori) { rtl_xori(s, ddest, dsrc1, id_src2->imm); }

@@ -54,7 +54,7 @@ regs_csr_t *csr_find(uint32_t addr) {
   regs_csr_t *t =
       csr_find_inner(addr, 0, regs_csr_tail > 0 ? regs_csr_tail - 1 : 0);
   if (t)
-    Log("CSR Found: " FMT_WORD " %s", t->addr, t->name);
+    Log("CSR Found: " FMT_WORD "[" FMT_WORD "]" " %s", t->addr, t->val, t->name);
   else
     Log(ASNI_FMT("CSR Not Found: " FMT_WORD, ASNI_FG_BLACK ASNI_BG_RED), addr);
   return t;
@@ -63,26 +63,29 @@ regs_csr_t *csr_find(uint32_t addr) {
 void init_csr() {
   // Init CSR Regs
   memset(regs_csr_map, 0, sizeof(regs_csr_t) * RISCV_CSR_REG_COUNT);
-  CSRA(0x300, 0x1800, mstatus);
-  CSRI(0x341, mepc);
-  CSRI(0x342, mcause);
-  CSRI(0x305, mtvec);
-
-  CSRI(0x104, unknown1);
-  CSRI(0x144, unknown2);
-  CSRI(0x100, unknown3);
-
+  
   CSRI(0x001, fflags);
   CSRI(0x002, frm);
   CSRI(0x003, fcsr);
+
+  CSRI(0x100, sstatus);
+  CSRI(0x104, sie);
+  CSRI(0x144, sip);
+
+  CSRA(0x300, 0x1800, mstatus);
   CSRI(0x301, misa);
   CSRI(0x304, mie);
+  CSRI(0x305, mtvec);
   CSRI(0x340, mscratch);
+  CSRI(0x341, mepc);
+  CSRI(0x342, mcause);
   CSRI(0x343, mtval);
   CSRI(0x344, mip);
+  
   CSRI(0xb00, mcycle);
   CSRI(0xb80, mcycleh);
   CSRI(0xb82, minstret);
+  
   CSRI(0xf11, mvendorid);
   CSRI(0xf12, marchid);
   CSRI(0xf13, mmimpid);
@@ -102,20 +105,6 @@ void init_csr() {
   csr_mepc = csr_find(0x341);
   csr_mcause = csr_find(0x342);
   csr_mtvec = csr_find(0x305);
-  // test
-  // regs_csr_t *target = NULL;
-  // target = csr_find(0x001);
-  // Log("CSR Test: %s", target ? target->name : "404");
-  // target = csr_find(0x002);
-  // Log("CSR Test: %s", target ? target->name : "404");
-  // target = csr_find(0x003);
-  // Log("CSR Test: %s", target ? target->name : "404");
-  // target = csr_find(0x300);
-  // Log("CSR Test: %s", target ? target->name : "404");
-  // target = csr_find(0x012);
-  // Log("CSR Test: %s", target ? target->name : "404");
-  // target = csr_find(0xFFF);
-  // Log("CSR Test: %s", target ? target->name : "404");
 }
 
 void init_isa() {

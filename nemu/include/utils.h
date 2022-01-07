@@ -59,7 +59,7 @@ uint64_t get_time();
   } while (0)
 
 extern char log_bytebuf[50];
-extern char log_asmbuf[128];
+extern char log_asmbuf[168];
 
 void serial_putc_buffed(char ch);
 const char *find_section(uint32_t pc);

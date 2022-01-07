@@ -74,3 +74,102 @@ def_EHelper(ecall) {
 }
 
 def_EHelper(ebreak) {}
+
+// x[rd] = AMO32(M[x[rs1]] + x[rs2])
+def_EHelper(amoadd) {
+  static rtlreg_t m;
+  rtl_lm(s, &m, dsrc1, 0, 4);
+  // Log("M[x[rs1]] = M[" FMT_WORD "] = " FMT_WORD, *dsrc1, m);
+  // Log("amoadd: x[rd] = AMO32(" FMT_WORD " + " FMT_WORD ")", m, *dsrc2);
+  // rtl_li(s, ddest, m + *dsrc2);
+  rtl_li(s, ddest, 0);
+}
+
+// x[rd] = AMO32(M[x[rs1]] & x[rs2])
+def_EHelper(amoand) {
+  static rtlreg_t m;
+  rtl_lm(s, &m, dsrc1, 0, 4);
+  rtl_li(s, ddest, m & *dsrc2);
+}
+
+// x[rd] = AMO32(M[x[rs1]] | x[rs2])
+def_EHelper(amoor) {
+  static rtlreg_t m;
+  rtl_lm(s, &m, dsrc1, 0, 4);
+  rtl_li(s, ddest, m | *dsrc2);
+}
+
+// x[rd] = AMO32(M[x[rs1]] ^ x[rs2])
+def_EHelper(amoxor) {
+  static rtlreg_t m;
+  rtl_lm(s, &m, dsrc1, 0, 4);
+  rtl_li(s, ddest, m ^ *dsrc2);
+}
+
+#ifndef max_
+#define max_(a, b) ((a) > (b) ? (a) : (b))
+#endif
+#ifndef min_
+#define min_(a, b) ((a) < (b) ? (a) : (b))
+#endif
+
+// x[rd] = AMO32(M[x[rs1]] MAX x[rs2])
+def_EHelper(amomax) {
+  static rtlreg_t m;
+  rtl_lm(s, &m, dsrc1, 0, 4);
+  rtl_li(s, ddest, max_((sword_t)m, (sword_t)*dsrc2));
+}
+
+// x[rd] = AMO32(M[x[rs1]] MAXU x[rs2])
+def_EHelper(amomaxu) {
+  static rtlreg_t m;
+  rtl_lm(s, &m, dsrc1, 0, 4);
+  rtl_li(s, ddest, max_(m, *dsrc2));
+}
+
+// x[rd] = AMO32(M[x[rs1]] MIN x[rs2])
+def_EHelper(amomin) {
+  static rtlreg_t m;
+  rtl_lm(s, &m, dsrc1, 0, 4);
+  rtl_li(s, ddest, min_((sword_t)m, (sword_t)*dsrc2));
+}
+
+// x[rd] = AMO32(M[x[rs1]] MINU x[rs2])
+def_EHelper(amominu) {
+  static rtlreg_t m;
+  rtl_lm(s, &m, dsrc1, 0, 4);
+  rtl_li(s, ddest, min_(m, *dsrc2));
+}
+
+// x[rd] = AMO32(M[x[rs1]] SWAP x[rs2])
+def_EHelper(amoswap) {
+  static rtlreg_t m;
+  rtl_lm(s, &m, dsrc1, 0, 4);
+  rtl_sm(s, dsrc2, dsrc1, 0, 4);
+  rtl_li(s, ddest, m);
+}
+
+// x[rd] = LoadReserved32(M[x[rs1]])
+def_EHelper(lr) {
+  static rtlreg_t m;
+  rtl_lm(s, &m, dsrc1, 0, 4);
+  // TODO: regist this addr
+  rtl_li(s, ddest, m);
+}
+
+// x[rd] = StoreConditonal32(M[x[rs1], x[rs2])
+def_EHelper(sc) {
+  static rtlreg_t m;
+  rtl_lm(s, &m, dsrc1, 0, 4);
+  rtl_sm(s, dsrc2, dsrc1, 0, 4);
+  // TODO: judge regist
+  rtl_li(s, ddest, 0);
+}
+
+def_EHelper(wfi) {
+  panic("No wfi!");
+}
+
+def_EHelper(fence) {
+  
+}

@@ -8,6 +8,9 @@ static Context* do_event(Event e, Context* c) {
     case EVENT_YIELD:
       Log("Meet EVENT_YIELD");
       break;
+    case EVENT_SYSCALL:
+      Log("Meet EVENT_SYSCALL");
+      break;
     default: panic("Unhandled event ID = %d", e.event);
   }
 

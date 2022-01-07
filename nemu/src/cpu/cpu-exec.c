@@ -30,7 +30,6 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #endif
   extern bool log_enable();
   if ((g_print_step IFDEF(CONFIG_ITRACE, || true)) && log_enable()) {
-    // IFDEF(CONFIG_ITRACE, puts(_this->logbuf));
     IFDEF(CONFIG_ITRACE, Log("%s", _this->logbuf));
   }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));

@@ -1,3 +1,4 @@
+// #include "../../../../../abstract-machine/am/include/am.h"
 #include "isa-def.h"
 #include "rtl-basic.h"
 def_EHelper(inv) { rtl_hostcall(s, HOSTCALL_INV, NULL, NULL, NULL, 0); }
@@ -5,6 +6,10 @@ def_EHelper(inv) { rtl_hostcall(s, HOSTCALL_INV, NULL, NULL, NULL, 0); }
 def_EHelper(nemu_trap) {
   rtl_hostcall(s, HOSTCALL_EXIT, NULL, &gpr(10), NULL, 0);  // gpr(10) is $a0
 }
+
+/**
+ * @brief RV Privileged
+ */
 
 // t = CSRs[csr]; CSRs[csr] = x[rs1]; x[rd] = t
 def_EHelper(csrrw) {
@@ -69,11 +74,26 @@ def_EHelper(csrrci) {
 def_EHelper(ecall) {
   static rtlreg_t target;
   Log("ecall now");
-  target = isa_raise_intr(1, 0);
+  target = isa_raise_intr(EVENT_YIELD, 0);
   rtl_jr(s, &target);
 }
 
 def_EHelper(ebreak) {}
+
+def_EHelper(wfi) { panic("No wfi!"); }
+
+def_EHelper(fence) {}
+
+def_EHelper(mret) {
+  static rtlreg_t target;
+  Log("ecall now");
+  target = isa_query_intr();
+  rtl_jr(s, &target);
+}
+
+/**
+ * @brief RVA
+ */
 
 // x[rd] = AMO32(M[x[rs1]] + x[rs2])
 def_EHelper(amoadd) {
@@ -164,12 +184,4 @@ def_EHelper(sc) {
   rtl_sm(s, dsrc2, dsrc1, 0, 4);
   // TODO: judge regist
   rtl_li(s, ddest, 0);
-}
-
-def_EHelper(wfi) {
-  panic("No wfi!");
-}
-
-def_EHelper(fence) {
-  
 }

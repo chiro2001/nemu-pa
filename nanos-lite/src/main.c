@@ -1,9 +1,5 @@
 #include <common.h>
 
-#ifndef HAS_CTE
-#define HAS_CTE
-#endif
-
 void init_mm(void);
 void init_device(void);
 void init_ramdisk(void);

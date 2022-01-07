@@ -1,8 +1,13 @@
 #include <common.h>
+#include "am.h"
+#include ARCH_H
 
 static Context* do_event(Event e, Context* c) {
   Log("Event: %d", e.event);
   switch (e.event) {
+    case EVENT_YIELD:
+      Log("Meet EVENT_YIELD");
+      break;
     default: panic("Unhandled event ID = %d", e.event);
   }
 

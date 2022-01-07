@@ -5,13 +5,15 @@
           "includePath": [
               "${workspaceFolder}/**",
               "${workspaceFolder}/nemu/include",
+              "${workspaceFolder}/abstract-machine/am/include",
               "${workspaceFolder}/abstract-machine/klib/include",
               "/usr/include"
           ],
           "defines": [
             "__GUEST_ISA__=riscv32",
             "__ISA__=riscv32",
-            "__ISA_RISCV32__"
+            "__ISA_RISCV32__",
+            "ARCH_H=\"arch/riscv32-nemu.h\""
           ],
           "compilerPath": "/usr/bin/gcc",
           "cStandard": "gnu17",

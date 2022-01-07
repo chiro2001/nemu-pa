@@ -97,7 +97,8 @@ void elf_init_info(const char *filepath) {
   }
   sections_tail--;
   SectionNode *p = sections;
-  size_t p_len = 100;
+  // size_t p_len = 100;
+  size_t p_len = 0;
   while (p != sections_tail && (p_len--)) {
     Log(FMT_WORD " %s", p->addr, p->name);
     p++;

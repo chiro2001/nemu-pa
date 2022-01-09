@@ -19,7 +19,7 @@ def_EHelper(csrrw) {
   Assert(csr, "Unsupported CSR: " FMT_WORD, id_src2->imm);
   t = csr->val;
   csr->val = *dsrc1;
-  Log("write: " FMT_WORD, csr->val);
+  IFDEF(CONFIG_EXT_SHOW_CSR_CHANGE, Log("write: " FMT_WORD, csr->val));
   *ddest = t;
 }
 // t = CSRs[csr]; CSRs[csr] = t | x[rs1]; x[rd] = t
@@ -30,6 +30,7 @@ def_EHelper(csrrs) {
   Assert(csr, "Unsupported CSR: " FMT_WORD, id_src2->imm);
   t = csr->val;
   csr->val = *dsrc1 | t;
+  IFDEF(CONFIG_EXT_SHOW_CSR_CHANGE, Log("write: " FMT_WORD, csr->val));
   *ddest = t;
 }
 // t = CSRs[csr]; CSRs[csr] = t &~x[rs1]; x[rd] = t
@@ -40,6 +41,7 @@ def_EHelper(csrrc) {
   Assert(csr, "Unsupported CSR: " FMT_WORD, id_src2->imm);
   t = csr->val;
   csr->val = ~*dsrc1 & t;
+  IFDEF(CONFIG_EXT_SHOW_CSR_CHANGE, Log("write: " FMT_WORD, csr->val));
   *ddest = t;
 }
 // x[rd] = CSRs[csr]; CSRs[csr] = zimm
@@ -49,6 +51,7 @@ def_EHelper(csrrwi) {
   Assert(csr, "Unsupported CSR: " FMT_WORD, id_src2->imm);
   *ddest = csr->val;
   csr->val = *dsrc1;
+  IFDEF(CONFIG_EXT_SHOW_CSR_CHANGE, Log("write: " FMT_WORD, csr->val));
 }
 // t = CSRs[csr]; CSRs[csr] = t | zimm; x[rd] = t
 def_EHelper(csrrsi) {
@@ -58,6 +61,7 @@ def_EHelper(csrrsi) {
   Assert(csr, "Unsupported CSR: " FMT_WORD, id_src2->imm);
   t = csr->val;
   csr->val = id_src1->imm | t;
+  IFDEF(CONFIG_EXT_SHOW_CSR_CHANGE, Log("write: " FMT_WORD, csr->val));
   *ddest = t;
 }
 // t = CSRs[csr]; CSRs[csr] = t &~zimm; x[rd] = t
@@ -68,12 +72,13 @@ def_EHelper(csrrci) {
   Assert(csr, "Unsupported CSR: " FMT_WORD, id_src2->imm);
   t = csr->val;
   csr->val = ~id_src1->imm & t;
+  IFDEF(CONFIG_EXT_SHOW_CSR_CHANGE, Log("write: " FMT_WORD, csr->val));
   *ddest = t;
 }
 
 def_EHelper(ecall) {
   static rtlreg_t target;
-  Log("ecall now");
+  IFDEF(CONFIG_EXT_SHOW_CALL_RET, Log("ecall now"));
   target = isa_raise_intr(EVENT_YIELD, 0);
   rtl_jr(s, &target);
 }
@@ -86,7 +91,7 @@ def_EHelper(fence) {}
 
 def_EHelper(mret) {
   static rtlreg_t target;
-  Log("ecall now");
+  IFDEF(CONFIG_EXT_SHOW_CALL_RET, Log("mret now"));
   target = isa_query_intr();
   rtl_jr(s, &target);
 }

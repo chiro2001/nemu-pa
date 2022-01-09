@@ -8,7 +8,7 @@ static Context* (*user_handler)(Event, Context*) = NULL;
 Context* __am_irq_handle(Context *c) {
   if (user_handler) {
     Event ev = {0};
-    printf("trap cause: %d\n", (int)c->mcause);
+    // printf("trap cause: %d\n", (int)c->mcause);
     switch (c->mcause) {
       case EVENT_YIELD:
         ev.event = EVENT_YIELD;

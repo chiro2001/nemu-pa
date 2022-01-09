@@ -1,8 +1,8 @@
 #ifndef __PROC_H__
 #define __PROC_H__
 
-#include <common.h>
-#include <memory.h>
+#include "common.h"
+#include "memory.h"
 
 #define STACK_SIZE (8 * PGSIZE)
 
@@ -17,5 +17,8 @@ typedef union {
 } PCB;
 
 extern PCB *current;
+
+static uintptr_t loader(PCB *pcb, const char *filename);
+void naive_uload(PCB *pcb, const char *filename);
 
 #endif

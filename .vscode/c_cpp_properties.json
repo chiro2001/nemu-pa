@@ -7,7 +7,7 @@
               "${workspaceFolder}/nemu/include",
               "${workspaceFolder}/abstract-machine/am/include",
               "${workspaceFolder}/abstract-machine/klib/include",
-              "/usr/include"
+              "~/Downloads/riscv/riscv32-unknown-elf/include/"
           ],
           "defines": [
             "__GUEST_ISA__=riscv32",

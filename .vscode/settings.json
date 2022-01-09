@@ -35,7 +35,13 @@
     "riscv.h": "c",
     "riscv32-nemu.h": "c",
     "isa.h": "c",
-    "stdatomic.h": "c"
+    "stdatomic.h": "c",
+    "elf.h": "c",
+    "proc.h": "c",
+    "memory.h": "c",
+    "string.h": "c",
+    "files.h": "c",
+    "*.def": "c"
   },
   "C_Cpp.files.exclude": {
     "**/.vscode": true,

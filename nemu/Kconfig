@@ -263,4 +263,10 @@ config EXT_NEWLIB_PATH
 config EXT_COMPILE_VERBOSE
   bool "--verbose"
   default n
+config EXT_SHOW_CSR_CHANGE
+  bool "Show changes of CSR"
+  default n
+config EXT_SHOW_CALL_RET
+  bool "Show Calls and Rets"
+  default n
 endmenu

@@ -1,4 +1,9 @@
 #include <common.h>
+#include <proc.h>
+
+#ifndef HAS_CTE
+#define HAS_CTE
+#endif
 
 void init_mm(void);
 void init_device(void);
@@ -10,7 +15,7 @@ void init_proc(void);
 int main() {
   extern const char logo[];
   // printf("%s", logo);
-  Log("'Hello World!' from Nanos-lite");
+  Log("Hello from Nanos-lite");
   Log("Build time: %s, %s", __TIME__, __DATE__);
 
   init_mm();
@@ -28,6 +33,10 @@ int main() {
   init_proc();
 
   Log("Finish initialization");
+
+  Log("Starting Application...");
+
+  naive_uload(current, NULL);
 
 #ifdef HAS_CTE
   yield();

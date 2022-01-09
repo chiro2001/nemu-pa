@@ -53,9 +53,10 @@ regs_csr_t *csr_find_inner(uint32_t addr, int left, int right) {
 regs_csr_t *csr_find(uint32_t addr) {
   regs_csr_t *t =
       csr_find_inner(addr, 0, regs_csr_tail > 0 ? regs_csr_tail - 1 : 0);
-  if (t)
-    Log("CSR Found: " FMT_WORD "[" FMT_WORD "]" " %s", t->addr, t->val, t->name);
-  else
+  if (t) {
+    // Log("CSR Found: " FMT_WORD "[" FMT_WORD "]" " %s", t->addr, t->val,
+    // t->name);
+  } else
     Log(ASNI_FMT("CSR Not Found: " FMT_WORD, ASNI_FG_BLACK ASNI_BG_RED), addr);
   return t;
 }
@@ -63,7 +64,7 @@ regs_csr_t *csr_find(uint32_t addr) {
 void init_csr() {
   // Init CSR Regs
   memset(regs_csr_map, 0, sizeof(regs_csr_t) * RISCV_CSR_REG_COUNT);
-  
+
   CSRI(0x001, fflags);
   CSRI(0x002, frm);
   CSRI(0x003, fcsr);
@@ -81,11 +82,11 @@ void init_csr() {
   CSRI(0x342, mcause);
   CSRI(0x343, mtval);
   CSRI(0x344, mip);
-  
+
   CSRI(0xb00, mcycle);
   CSRI(0xb80, mcycleh);
   CSRI(0xb82, minstret);
-  
+
   CSRI(0xf11, mvendorid);
   CSRI(0xf12, marchid);
   CSRI(0xf13, mmimpid);

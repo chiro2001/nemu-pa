@@ -1,6 +1,10 @@
 #ifndef AM_H__
 #define AM_H__
 
+#ifndef AM
+#define AM
+#endif
+
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>

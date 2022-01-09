@@ -4,10 +4,16 @@
 #include <string.h>
 #include <inttypes.h>
 
-#include "bele.h"
+#include "libbele/bele.h"
 #include "elf.h"
 #include "dat.h"
 #include "fns.h"
+
+#ifdef AM
+#include "fs.h"
+#define fread fread_ramdisk
+#define fseek fseek_ramdisk
+#endif
 
 // #define DEBUG
 
@@ -493,6 +499,7 @@ readident(FILE *f, Fhdr *fp)
 		return -1;
 
 	p = buf;
+	
 	if (fread(p, EI_NIDENT, 1, f) != 1)
 		return -1;
 
@@ -665,7 +672,7 @@ newsection(FILE *f, uint64_t offset, uint64_t size)
 /*
  * Read ELF String Table
  */
-static int
+int
 readelfstrndx(FILE *f, Fhdr *fp)
 {
 	if (fp->shstrndx == SHN_UNDEF) {

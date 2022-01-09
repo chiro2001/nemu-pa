@@ -1,7 +1,22 @@
 #ifndef _ELFLIB_ELF_H
 #define _ELFLIB_ELF_H
 
-#include "dat.h"
+// #include "dat.h"
+// #include <elf.h>
+
+#ifndef Elf32_Phdr_
+#define Elf32_Phdr_
+typedef struct {
+	uint32_t	type;
+	uint32_t	offset;
+	uint32_t	vaddr;
+	uint32_t	paddr;
+	uint32_t	filesz;
+	uint32_t	memsz;
+	uint32_t	flags;
+	uint32_t	align;
+} Elf32_Phdr;
+#endif
 
 typedef struct Fhdr Fhdr;
 
@@ -71,12 +86,10 @@ char* elfversion(uint8_t);
 
 /**
  * @brief extras
- * 
  */
-
 char* getstr(Fhdr *fp, uint32_t i);
-
 Elf32_Phdr *getelf32phdr(FILE *f, Fhdr *fp);
-
 int readident(FILE *f, Fhdr *fp);
+int readelfstrndx(FILE *f, Fhdr *fp);
+int readelfshdrs(FILE *f, Fhdr *fp);
 #endif

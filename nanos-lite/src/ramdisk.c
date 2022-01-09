@@ -23,6 +23,29 @@ size_t ramdisk_write(const void *buf, size_t offset, size_t len) {
   return len;
 }
 
+size_t fread_ramdisk(void *buf, size_t size, size_t n, FILE *f) {
+  Log("fread(0x%08x, %d, %d, 0x%08x), offset = 0x%08x", (size_t)buf, (int)size, (int)n, (size_t)f, (size_t)f->_offset);
+  size_t res = ramdisk_read(buf, f->_offset, size * n) / size;
+  f->_offset += size * n;
+  return res;
+}
+
+size_t fseek_ramdisk(FILE *f, size_t offset, size_t direction) {
+  f->_offset = offset;
+  return 0;
+}
+
+FILE *fopen_ramdisk(const char *filename, const char *method) {
+  FILE *f = (FILE *)malloc(sizeof(FILE));
+  memset(f, 0, sizeof(*f));
+  return f;
+}
+
+int fclose_ramdisk(FILE *f) {
+  free(f);
+  return 0;
+}
+
 void init_ramdisk() {
   Log("ramdisk info: start = %p, end = %p, size = %d bytes",
       &ramdisk_start, &ramdisk_end, RAMDISK_SIZE);

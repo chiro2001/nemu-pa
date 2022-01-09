@@ -91,6 +91,8 @@ typedef struct {
 /*
  * ELF32 Program Header
  */
+#ifndef Elf32_Phdr_
+#define Elf32_Phdr_
 typedef struct {
 	uint32_t	type;
 	uint32_t	offset;
@@ -101,6 +103,7 @@ typedef struct {
 	uint32_t	flags;
 	uint32_t	align;
 } Elf32_Phdr;
+#endif
 
 /*
  * ELF64 Program Header

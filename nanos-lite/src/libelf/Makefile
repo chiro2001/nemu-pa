@@ -39,5 +39,7 @@ nuke: clean cleandeps
 	rm -f $(LIB)
 
 test: default
+	cp test.c.ignore test.c
 	gcc test.c $(shell find . -name "*.o") $(shell find . -name "*.a") -o test
+	rm test.c
 	./test

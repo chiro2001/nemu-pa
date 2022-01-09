@@ -13,7 +13,8 @@
             "__GUEST_ISA__=riscv32",
             "__ISA__=riscv32",
             "__ISA_RISCV32__",
-            "ARCH_H=\"arch/riscv32-nemu.h\""
+            "ARCH_H=\"arch/riscv32-nemu.h\"",
+            "AM"
           ],
           "compilerPath": "/usr/bin/gcc",
           "cStandard": "gnu17",

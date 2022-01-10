@@ -24,7 +24,7 @@ size_t ramdisk_write(const void *buf, size_t offset, size_t len) {
 }
 
 size_t fread_ramdisk(void *buf, size_t size, size_t n, FILE *f) {
-  Log("fread(0x%08x, %d, %d, 0x%08x), offset = 0x%08x", (size_t)buf, (int)size, (int)n, (size_t)f, (size_t)f->_offset);
+  // Log("fread(0x%08x, %d, %d, 0x%08x), offset = 0x%08x", (size_t)buf, (int)size, (int)n, (size_t)f, (size_t)f->_offset);
   size_t res = ramdisk_read(buf, f->_offset, size * n) / size;
   f->_offset += size * n;
   return res;

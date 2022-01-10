@@ -152,7 +152,11 @@ const char *find_section(uint32_t pc) {
  */
 void elf_init() {
   const char *name = name_from_img_file();
-  assert(name);
+  if (!name) {
+    Log("No elf file to read!");
+    return;
+  }
+  // assert(name);
   const char *path = NULL;
   if (strcmp(name, "Image") == 0) {
     path = "/home/chiro/Downloads/linux-5.4.168/vmlinux";

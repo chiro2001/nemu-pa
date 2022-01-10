@@ -30,9 +30,9 @@ uintptr_t loader(PCB *pcb, const char *filename) {
   f = fopen_ramdisk(filename, "rb");
   if (f == NULL) return -1;
 
-  check(readelf(f, &fhdr));
-  printelfhdr(&fhdr);
-  Log("Finding sections...");
+  // check(readelf(f, &fhdr));
+  // printelfhdr(&fhdr);
+  // Log("Finding sections...");
   Fhdr *fp = &fhdr;
   FILE *f_elf = fopen_ramdisk(NULL, NULL);
 
@@ -46,6 +46,9 @@ uintptr_t loader(PCB *pcb, const char *filename) {
   // for (int i = 0; i < fp->shnum; i++) fp->readelfshdr(f, fp);
 
   check(fseek_ramdisk(f, fp->phoff, SEEK_SET));
+
+  entry = fp->entry;
+  Log("Found entry at: 0x%08x", entry);
 
   for (int i = 0; i < fp->phnum; i++) {
     // PINT(i);
@@ -61,14 +64,14 @@ uintptr_t loader(PCB *pcb, const char *filename) {
     uint8_t *vaddr = (uint8_t *)ph->vaddr;
     memset(vaddr, 0, ph->memsz);
     fseek_ramdisk(f_elf, ph->offset, SEEK_SET);
-    Log("fread_ramdisk(vaddr, ph->filesz, 1, f_elf) = fread_ramdisk(0x%08x, "
-        "%u, 1, f_elf)",
-        vaddr, ph->filesz);
+    // Log("fread_ramdisk(vaddr, ph->filesz, 1, f_elf) = fread_ramdisk(0x%08x, "
+    //     "%u, 1, f_elf)",
+    //     vaddr, ph->filesz);
     fread_ramdisk(vaddr, ph->filesz, 1, f_elf);
     if (ph) free(ph);
   }
 
-  entry = fp->entry;
+  // entry = 0x830003dc;//fp->entry;
 
   Log("exit normally...");
 

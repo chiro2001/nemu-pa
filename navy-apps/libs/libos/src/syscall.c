@@ -60,10 +60,18 @@ int _open(const char *path, int flags, mode_t mode) {
   return 0;
 }
 
-int _write(int fd, void *buf, size_t count) {
-  _exit(SYS_write);
-  return 0;
+int _write(int file, char *ptr, int len) {
+  int l = len;
+  while (l--) {
+    outb(SERIAL_PORT, *(ptr++));
+  }
+  return len;
 }
+
+// int _write(int fd, void *buf, size_t count) {
+//   _exit(SYS_write);
+//   return 0;
+// }
 
 void *_sbrk(intptr_t increment) {
   return (void *)-1;

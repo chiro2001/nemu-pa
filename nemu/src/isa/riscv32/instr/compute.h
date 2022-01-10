@@ -8,10 +8,11 @@ def_EHelper(auipc) { rtl_li(s, ddest, id_src1->imm + s->pc); }
 //   rtl_li(s, ddest, target + s->pc);
 // }
 def_EHelper(add) { rtl_add(s, ddest, dsrc1, dsrc2); }
-def_EHelper(addi) { 
-  // Log("addi: x[sr1] + sr2.imm = " FMT_WORD " + " FMT_WORD " = " FMT_WORD, *dsrc1, id_src2->imm, *dsrc1 + id_src2->imm);
+def_EHelper(addi) {
+  // Log("addi: x[sr1] + sr2.imm = " FMT_WORD " + " FMT_WORD " = " FMT_WORD,
+  // *dsrc1, id_src2->imm, *dsrc1 + id_src2->imm);
   rtl_addi(s, ddest, dsrc1, id_src2->imm);
-  }
+}
 def_EHelper(sub) { rtl_sub(s, ddest, dsrc1, dsrc2); }
 def_EHelper(xor) { rtl_xor(s, ddest, dsrc1, dsrc2); }
 def_EHelper(xori) { rtl_xori(s, ddest, dsrc1, id_src2->imm); }
@@ -38,21 +39,30 @@ def_EHelper(slti) {
 def_EHelper(sltu) { rtl_li(s, ddest, *dsrc1 < *dsrc2 ? 1 : 0); }
 def_EHelper(sltiu) { rtl_li(s, ddest, *dsrc1 < id_src2->imm ? 1 : 0); }
 
+static rtlreg_t last = 0;
+static rtlreg_t last2 = 0;
+
 #define jump_info(target)                                                      \
   do {                                                                         \
     extern uint64_t g_nr_guest_instr;                                          \
-    static rtlreg_t last = 0;                                                  \
-    if (last != target) {                                                      \
-      const char *s = find_section(target);                                    \
-      if (*s == '<' IFDEF(CONFIG_EXT_PRINT_JUMP_MORE, || true)) {              \
-        IFDEF(CONFIG_EXT_PRINT_JUMP,                                           \
+    extern bool log_enable();                                                  \
+    if ((((last != target && last2 != last) || (last == 0 || last2 == 0)) &&   \
+         log_enable()) ||                                                      \
+        (target >= 0x83000000)) {                                              \
+      IFDEF(CONFIG_EXT_PRINT_JUMP_MORE, {                                      \
+        const char *section_name = find_section(target);                       \
+        if (*section_name == '<') {                                            \
+          IFDEF(                                                               \
+              CONFIG_EXT_PRINT_JUMP,                                           \
               MUXDEF(CONFIG_EXT_PRINT_SECTIONS,                                \
                      Log("\t%07d " FMT_WORD " @%s", (int)g_nr_guest_instr,     \
-                         target, s),                                           \
+                         target, section_name),                                \
                      Log("\t%07d " FMT_WORD, (int)g_nr_guest_instr, target))); \
-        last = target;                                                         \
-      }                                                                        \
+        }                                                                      \
+      });                                                                      \
     }                                                                          \
+    last2 = last;                                                              \
+    last = target;                                                             \
   } while (0)
 
 /**

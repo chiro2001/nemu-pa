@@ -1,7 +1,9 @@
 #include <device/map.h>
 #include <utils.h>
 
+#ifndef KEYDOWN_MASK
 #define KEYDOWN_MASK 0x8000
+#endif
 
 #ifndef CONFIG_TARGET_AM
 #include <SDL2/SDL.h>

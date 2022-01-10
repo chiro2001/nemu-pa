@@ -43,7 +43,10 @@
     "files.h": "c",
     "*.def": "c",
     "*.ignore": "c",
-    "syscall.h": "c"
+    "syscall.h": "c",
+    "utility.h": "c",
+    "arch.h": "c",
+    "amdev.h": "c"
   },
   "C_Cpp.files.exclude": {
     "**/.vscode": true,

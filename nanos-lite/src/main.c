@@ -1,5 +1,6 @@
 #include <common.h>
 #include <proc.h>
+#include "fs.h"
 
 #ifndef HAS_CTE
 #define HAS_CTE
@@ -36,7 +37,9 @@ int main() {
 
   Log("Starting Application...");
 
-  naive_uload(current, NULL);
+  // naive_uload(current, NULL);
+
+  bash(NULL);
 
 #ifdef HAS_CTE
   yield();

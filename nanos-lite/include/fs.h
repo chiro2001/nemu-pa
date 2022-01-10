@@ -12,4 +12,10 @@ size_t fseek_ramdisk(FILE *f, size_t offset, size_t direction);
 FILE *fopen_ramdisk(const char *filename, const char *method);
 int fclose_ramdisk(FILE *f);
 
+#include "myFs.h"
+
+extern Fs fs;
+
+void bash(Fs fs_);
+
 #endif

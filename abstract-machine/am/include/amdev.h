@@ -52,6 +52,10 @@ enum {
   AM_KEYS(AM_KEY_NAMES)
 };
 
+#ifndef KEYDOWN_MASK
+#define KEYDOWN_MASK 0x8000
+#endif
+
 // GPU
 
 #define AM_GPU_TEXTURE  1

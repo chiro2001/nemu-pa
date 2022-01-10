@@ -4,6 +4,8 @@
 #include <sys/time.h>
 #include <assert.h>
 #include <time.h>
+#include <stdbool.h>
+#include <stdio.h>
 #include "syscall.h"
 
 // helper macros
@@ -73,13 +75,85 @@ int _write(int file, char *ptr, int len) {
 //   return 0;
 // }
 
+// int _write(int file, void *p, int len) {
+//   char *ptr = (char *)p;
+//   int l = len;
+//   while (l--) {
+//     putch(*(ptr++));
+//   }
+//   return len;
+// }
+
+
 void *_sbrk(intptr_t increment) {
   return (void *)-1;
 }
 
-int _read(int fd, void *buf, size_t count) {
-  _exit(SYS_read);
-  return 0;
+// int _read(int fd, void *buf, size_t count) {
+//   _exit(SYS_read);
+//   return 0;
+// }
+
+#define AM_KEYS(_) \
+  _(ESCAPE) _(F1) _(F2) _(F3) _(F4) _(F5) _(F6) _(F7) _(F8) _(F9) _(F10) _(F11) _(F12) \
+  _(GRAVE) _(1) _(2) _(3) _(4) _(5) _(6) _(7) _(8) _(9) _(0) _(MINUS) _(EQUALS) _(BACKSPACE) \
+  _(TAB) _(Q) _(W) _(E) _(R) _(T) _(Y) _(U) _(I) _(O) _(P) _(LEFTBRACKET) _(RIGHTBRACKET) _(BACKSLASH) \
+  _(CAPSLOCK) _(A) _(S) _(D) _(F) _(G) _(H) _(J) _(K) _(L) _(SEMICOLON) _(APOSTROPHE) _(RETURN) \
+  _(LSHIFT) _(Z) _(X) _(C) _(V) _(B) _(N) _(M) _(COMMA) _(PERIOD) _(SLASH) _(RSHIFT) \
+  _(LCTRL) _(APPLICATION) _(LALT) _(SPACE) _(RALT) _(RCTRL) \
+  _(UP) _(DOWN) _(LEFT) _(RIGHT) _(INSERT) _(DELETE) _(HOME) _(END) _(PAGEUP) _(PAGEDOWN)
+
+#define AM_KEY_NAMES(key) AM_KEY_##key,
+enum {
+  AM_KEY_NONE = 0,
+  AM_KEYS(AM_KEY_NAMES)
+};
+
+typedef struct {
+  bool keydown; int keycode;
+} AM_INPUT_KEYBRD_T;
+
+AM_INPUT_KEYBRD_T g_ev;
+const char input_key_data[128] =
+    "\0\0\0\0\0\0\0\0\0\0\0\0\0"
+    "`1234567890-=\b"
+    "\tqwertyuiop[]\\"
+    "\0asdfghjkl;'\n"
+    "\0zxcvbnm,./";
+  
+#ifndef KEYDOWN_MASK
+#define KEYDOWN_MASK 0x8000
+#endif
+
+void nanos_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
+  kbd->keydown = ((*((uint32_t *)KBD_ADDR)) & KEYDOWN_MASK) != 0;
+  kbd->keycode = ((*((uint32_t *)KBD_ADDR)) & KEYDOWN_MASK)
+                     ? (*((uint32_t *)KBD_ADDR)) - KEYDOWN_MASK
+                     : (*((uint32_t *)KBD_ADDR));
+  printf("input: keydown=%d, keycode=%d\n", (int)kbd->keydown, (int)kbd->keycode);
+}
+
+int readch() {
+  while (1) {
+    void nanos_input_keybrd(AM_INPUT_KEYBRD_T *kbd);
+    nanos_input_keybrd(&g_ev);
+    if (g_ev.keycode == AM_KEY_NONE) break;
+    if (g_ev.keydown) {
+      return input_key_data[g_ev.keycode];
+    }
+  }
+  return EOF;
+}
+
+int _read(int file, void *ptr, size_t len) {
+  // int readch();
+  printf("read file=%d, len=%d\n", file, len);
+  int l = len;
+  char *p = (char *) ptr;
+  while (l--) {
+    *(p++) = readch();
+  }
+  return len;
 }
 
 int _close(int fd) {

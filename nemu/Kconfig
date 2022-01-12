@@ -269,4 +269,10 @@ config EXT_SHOW_CSR_CHANGE
 config EXT_SHOW_CALL_RET
   bool "Show Calls and Rets"
   default n
+config EXT_SHOW_ELF_SYMBOL_NUMBER
+  int "Display NUM symbols after loading ELF file"
+  default 0
+config EXT_DECODE_OPTIM
+  bool "Instruction Decode Optimization"
+  default y
 endmenu

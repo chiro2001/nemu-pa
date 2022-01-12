@@ -64,8 +64,10 @@ void elf_init_info(const char *filepath) {
       buf_area[24], buf_type2[32], buf_1[2], buf_name[32];
   // sprintf(buf, "riscv64-linux-gnu-readelf \"%s\" -s | grep FUNC | wc -l",
   //         filepath);
-  sprintf(buf, "riscv64-linux-gnu-readelf \"%s\" -s | grep \"FUNC\\|NOTYPE\" | wc -l",
-          filepath);
+  sprintf(
+      buf,
+      "riscv64-linux-gnu-readelf \"%s\" -s | grep \"FUNC\\|NOTYPE\" | wc -l",
+      filepath);
   FILE *f = popen(buf, "r");
   int r = fscanf(f, "%d", &line_count);
   assert(r);
@@ -75,8 +77,11 @@ void elf_init_info(const char *filepath) {
   sections_tail = sections;
   // sprintf(buf, "riscv64-linux-gnu-readelf \"%s\" -s | grep FUNC | sort -k 2",
   //         filepath);
-  sprintf(buf, "riscv64-linux-gnu-readelf \"%s\" -s | grep \"FUNC\\|NOTYPE\" | sort -k 2",
+  sprintf(buf,
+          "riscv64-linux-gnu-readelf \"%s\" -s | grep \"FUNC\\|NOTYPE\" | sort "
+          "-k 2",
           filepath);
+  system(buf);
   f = popen(buf, "r");
   while (fgets(line, 128, f)) {
     //  2103: 80038bb4    12 FUNC    GLOBAL DEFAULT    1 __am_gpu_status
@@ -97,9 +102,10 @@ void elf_init_info(const char *filepath) {
   }
   sections_tail--;
   SectionNode *p = sections;
-  // size_t p_len = 100;
-  size_t p_len = 0;
+  // size_t p_len = 10;
+  size_t p_len = CONFIG_EXT_SHOW_ELF_SYMBOL_NUMBER;
   while (p != sections_tail && (p_len--)) {
+    if (!p->name || (p->name && !*p->name)) continue;
     Log(FMT_WORD " %s", p->addr, p->name);
     p++;
   }
@@ -164,5 +170,6 @@ void elf_init() {
     path = elf_find_path(name);
   }
   assert(path);
+  Log("ELF path: %s", path);
   elf_init_info(path);
 }

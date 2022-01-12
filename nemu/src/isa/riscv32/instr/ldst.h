@@ -1,13 +1,20 @@
 #ifdef CONFIG_EXT_PRINT_LOADSAVE
-#define print_load(val) Log(ASNI_FMT("load", ASNI_FG_YELLOW ASNI_BG_RED) " M[" FMT_WORD "]" FMT_WORD, *dsrc1 + id_src2->imm, (val))
-#define print_save(val) Log(ASNI_FMT("save", ASNI_FG_BLACK ASNI_BG_WHITE) " " FMT_WORD " -> M[" FMT_WORD "]", (val), *dsrc1 + id_src2->imm)
+#define print_load(val)                                                   \
+  Log("\t" ASNI_FMT("load", ASNI_FG_YELLOW ASNI_BG_RED) " M[" FMT_WORD    \
+                                                        "] === " FMT_WORD, \
+      *dsrc1 + id_src2->imm, (val))
+#define print_save(val)                                                    \
+  Log("\t" ASNI_FMT("save", ASNI_FG_BLACK ASNI_BG_WHITE) "   " FMT_WORD    \
+                                                         " -> M[" FMT_WORD \
+                                                         "]",              \
+      (val), *dsrc1 + id_src2->imm)
 #else
 #define print_load(val)
 #define print_save(val)
 #endif
 def_EHelper(lw) {
-  print_load(*ddest);
   rtl_lm(s, ddest, dsrc1, id_src2->imm, 4);
+  print_load(*ddest);
 }
 def_EHelper(lb) {
   rtl_lm(s, ddest, dsrc1, id_src2->imm, 1);
@@ -30,6 +37,9 @@ def_EHelper(lhu) {
   *ddest = *ddest & 0xFFFF;
 }
 def_EHelper(sw) {
+  // static rtlreg_t target;
+  // target = *ddest;
+  // print_save(target);
   print_save(*ddest);
   rtl_sm(s, ddest, dsrc1, id_src2->imm, 4);
 }

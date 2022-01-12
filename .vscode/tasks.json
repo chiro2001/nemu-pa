@@ -46,10 +46,10 @@
       "command": "make",
       "args": [
         "run",
-        "IMG=/home/chiro/Downloads/linux-5.4.168/arch/riscv/boot/Image"
+        "ALL=mul-longlong"
       ],
       "options": {
-        "cwd": "${workspaceFolder}/nemu",
+        "cwd": "${workspaceFolder}/am-kernels/tests/cpu-tests",
         "env": {
           "NEMU_HOME": "/home/chiro/ics2021/nemu",
           "ARCH": "riscv32-nemu",

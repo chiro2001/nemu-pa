@@ -46,7 +46,8 @@
     "syscall.h": "c",
     "utility.h": "c",
     "arch.h": "c",
-    "amdev.h": "c"
+    "amdev.h": "c",
+    "atomic": "c"
   },
   "C_Cpp.files.exclude": {
     "**/.vscode": true,

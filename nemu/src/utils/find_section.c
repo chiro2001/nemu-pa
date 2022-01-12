@@ -58,7 +58,7 @@ SectionNode *sections_tail = NULL;
  */
 void elf_init_info(const char *filepath) {
   static char buf[256];
-  char line[128];
+  char line[1024];
   int line_count = 0;
   char buf_line_number[32], buf_addr[12], buf_unknown[12], buf_type[12],
       buf_area[24], buf_type2[32], buf_1[2], buf_name[32];
@@ -71,6 +71,7 @@ void elf_init_info(const char *filepath) {
   FILE *f = popen(buf, "r");
   int r = fscanf(f, "%d", &line_count);
   assert(r);
+  Log("ELF Read %d Sections.", (int)line_count);
   sections = malloc(sizeof(SectionNode) * line_count);
   memset(sections, 0, sizeof(SectionNode) * line_count);
   assert(sections);
@@ -83,21 +84,32 @@ void elf_init_info(const char *filepath) {
           filepath);
   system(buf);
   f = popen(buf, "r");
-  while (fgets(line, 128, f)) {
+  bool read_elf_head = false;
+  while (fgets(line, 1024, f)) {
     //  2103: 80038bb4    12 FUNC    GLOBAL DEFAULT    1 __am_gpu_status
+    // Log("Read line: %s", line);
     int ret =
         sscanf(line, "%s%s%s%s%s%s%s%s", buf_line_number, buf_addr, buf_unknown,
                buf_type, buf_area, buf_type2, buf_1, buf_name);
-    // Assert(ret == 8, "sscanf for elf info should be 8, ret = %d", ret);
+    // Assert((ret == 8 && !read_elf_head), "sscanf for elf info should be 8,
+    // ret = %d", ret);
+    if (!read_elf_head) {
+      read_elf_head = true;
+      continue;
+    }
+    // if (ret != 8) {
+    //   Log("sscanf for elf info should be 8, ret = %d", ret);
+    // }
     if (ret != 8) continue;
     strcpy(sections_tail->name, buf_name);
     sscanf(buf_addr, "%x", &sections_tail->addr);
-#define CONFIG_READELF_OFFSET 0xc0000040
-    if (sections_tail->addr >= CONFIG_READELF_OFFSET)
-      sections_tail->addr -= CONFIG_READELF_OFFSET;
-    else
-      continue;
-    sections_tail->addr += CONFIG_MBASE;
+// #define CONFIG_READELF_OFFSET 0xc0000040
+//     if (sections_tail->addr >= CONFIG_READELF_OFFSET)
+//       sections_tail->addr -= CONFIG_READELF_OFFSET;
+//     else
+//       continue;
+//     sections_tail->addr += CONFIG_MBASE;
+    // Log("ELF Read: " FMT_WORD " : %s", sections_tail->addr, sections_tail->name);
     sections_tail++;
   }
   sections_tail--;
@@ -106,6 +118,7 @@ void elf_init_info(const char *filepath) {
   size_t p_len = CONFIG_EXT_SHOW_ELF_SYMBOL_NUMBER;
   while (p != sections_tail && (p_len--)) {
     if (!p->name || (p->name && !*p->name)) continue;
+    // if (!p->addr) continue;
     Log(FMT_WORD " %s", p->addr, p->name);
     p++;
   }

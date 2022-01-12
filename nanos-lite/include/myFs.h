@@ -41,4 +41,12 @@ void FsCp(Fs fs, bool recursive, char *src[], char *dest);
 
 void FsMv(Fs fs, char *src[], char *dest);
 
+size_t fread_myfs(void *buf, size_t size, size_t n, FILE *f);
+
+size_t fseek_myfs(FILE *f, size_t offset, size_t direction);
+
+FILE *fopen_myfs(const char *pathStr, const char *method);
+
+int fclose_myfs(FILE *f);
+
 #endif

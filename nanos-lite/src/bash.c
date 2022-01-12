@@ -2,14 +2,36 @@
 
 extern Fs fs;
 
+char input[FS_PATH_MAX];
+char cwd[FS_PATH_MAX + 1];
+
+int bash_exec(char *pathStr) {
+  // PATH *path = NULL;
+  // FsErrors res = FsPathParse(fs->pathRoot, pathStr, &path);
+  // if (res) {
+  //   PERRORD(res, "'%s'", pathStr);
+  //   FsPathFree(path);
+  //   return;
+  // }
+  // PATH *pathTail = FsPathGetTail(path);
+  // if (pathTail->file->type != REGULAR_FILE) {
+  //   PERRORD(FS_IS_A_DIRECTORY, "'%s'", pathStr);
+  //   FsPathFree(path);
+  //   return;
+  // }
+  // FIL *target = pathTail->file;
+  
+  // FsPathFree(path);
+  naive_uload(current, pathStr);
+  return 0;
+}
+
 void bash(Fs fs_) {
   fs = fs_;
   puts("======= WHERECOME TO BASH ========");
   if (!fs) {
     fs = FsNew();
   }
-  char input[FS_PATH_MAX];
-  char cwd[FS_PATH_MAX + 1];
   int to_exit = 0;
   while (!to_exit) {
     FsGetCwd(fs, cwd);
@@ -31,6 +53,7 @@ void bash(Fs fs_) {
       }
       tmp++;
     }
+    puts(input);
     char *arg = input;
     if (!*input) continue;
     while (arg < input + FS_PATH_MAX && *arg && *arg != ' ') {
@@ -95,6 +118,12 @@ void bash(Fs fs_) {
       if (*arg == ' ') *(arg++) = '\0';
       char *srcFiles[] = {arg2, NULL};
       FsMv(fs, srcFiles, arg);
+    } else if (*name == '.' && *(name + 1) == '/') {
+      char *exec_name = name + 2;
+      int ret = bash_exec(exec_name);
+      if (ret) {
+        printf("%s returns %d", exec_name, ret);
+      }
     } else {
       printf("Unknown command: %s\n", name);
     }

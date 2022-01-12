@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
 
 typedef enum {
   REGULAR_FILE,
@@ -46,6 +47,8 @@ struct FIL_t {
   size_t size_file;
   // 文件内容
   char *content;
+  // 文件号
+  size_t file;
 };
 
 typedef struct FIL_t FIL;
@@ -152,5 +155,10 @@ enum { FS_WRITE_NEW, FS_WRITE_APPEND };
 int FsWrite(FIL *target, size_t size, void *src, int mode);
 
 int FsRead(FIL *target, size_t offset, size_t size, void *dst);
+
+extern size_t file_tail;
+#define MYFS_FILE_START 0x40
+#define MYFS_FILE_MAX 512
+extern FIL *files_list[MYFS_FILE_MAX];
 
 #endif

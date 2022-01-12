@@ -39,7 +39,8 @@ int main() {
 
   // naive_uload(current, NULL);
 
-  bash(NULL);
+  extern Fs fs;
+  bash(fs);
 
 #ifdef HAS_CTE
   yield();

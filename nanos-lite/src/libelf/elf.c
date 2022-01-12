@@ -11,8 +11,10 @@
 
 #ifdef AM
 #include "fs.h"
-#define fread fread_ramdisk
-#define fseek fseek_ramdisk
+// #define fread fread_ramdisk
+// #define fseek fseek_ramdisk
+#define fread fread_myfs
+#define fseek fseek_myfs
 #endif
 
 // #define DEBUG

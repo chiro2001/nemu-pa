@@ -70,7 +70,7 @@ void init_fs() {
                      "/share/files", "/share/music",    "/share/music/rhythm",
                      "/bin"};
   for (size_t i = 0; i < sizeof(dirs) / 32; i++) {
-    Log("MkDir: %s", dirs[i]);
+    // Log("MkDir: %s", dirs[i]);
     FsMkdir(fs, dirs[i]);
   }
   // Load file table -> memory
@@ -79,11 +79,11 @@ void init_fs() {
     // 只加载普通文件
     if (fd->read != NULL) continue;
     char *p = fd->name;
-    bool ready_to_load = false;
-    while (*p && *p != '.') p++;
-    if (*p) ready_to_load = false;
+    bool ready_to_load = true;
+    // while (*p && *p != '.') p++;
+    // if (*p) ready_to_load = false;
     if (!ready_to_load) continue;
-    Log("Loading %s...", fd->name);
+    // Log("Loading %s...", fd->name);
     FIL *target = FsMkfile(fs, fd->name);
     if (!target) {
       Log("Failed to create file!");

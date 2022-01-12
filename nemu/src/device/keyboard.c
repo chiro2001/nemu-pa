@@ -54,7 +54,7 @@ static uint32_t key_dequeue() {
 }
 
 void send_key(uint8_t scancode, bool is_keydown) {
-  // T don't know why....
+  // I don't know why....
   // Log("(uint8_t scancode, bool is_keydown) = (%u, %s)", scancode, is_keydown ? "true" : "false");
   if (scancode == 41 && is_keydown && !skipped_first_esc) {
     return;

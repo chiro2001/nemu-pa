@@ -125,6 +125,9 @@ PATH *FsPathInsert(PATH *tail, FIL *file) {
   return tail->next;
 }
 
+size_t file_tail = MYFS_FILE_START;
+FIL *files_list[MYFS_FILE_MAX];
+
 /// 初始化一个文件(FIL)
 /// \param parent
 /// \param file
@@ -144,6 +147,8 @@ void FsFilInit(FIL *parent, FIL **file, const char *name) {
   strcpy((*file)->name, name);
   (*file)->parent = parent;
   (*file)->type = REGULAR_FILE;
+  (*file)->file = file_tail;
+  files_list[file_tail++] = *file;
 }
 
 /// 新建文件链接

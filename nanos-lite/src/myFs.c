@@ -4,12 +4,14 @@
 
 #include "myFs.h"
 
-#include <assert.h>
+// #include <assert.h>
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "common.h"
 
 /// 错误码 -> 错误描述
 const char FsErrorMessages[8][64] = {"Fs OK",
@@ -668,4 +670,58 @@ void FsMv(Fs fs, char *src[], char *dest) {
     }
   }
   FsPathFree(pathDst);
+}
+
+extern Fs fs;
+
+FIL *FsFilFindByFile(size_t file) { return files_list[file]; }
+
+size_t fread_myfs(void *buf, size_t size, size_t n, FILE *f) {
+  // Log("fread(0x%08x, %d, %d, 0x%08x), offset = 0x%08x", (size_t)buf, (int)size,
+  //     (int)n, (size_t)f, (size_t)f->_offset);
+  // size_t res = myfs_read(buf, f->_offset, size * n) / size;
+  FIL *target = FsFilFindByFile(f->_file);
+  // size_t res = (size + f->_offset) < target->size_file ? n :
+  // (target->size_file - offset) / size;
+  size_t res = n;
+  FsRead(target, f->_offset, size * n, buf);
+  f->_offset += res * size;
+  return res;
+}
+
+size_t fseek_myfs(FILE *f, size_t offset, size_t direction) {
+  FIL *target = FsFilFindByFile(f->_file);
+  f->_offset = offset < target->size_file ? offset : target->size_file;
+  return 0;
+}
+
+FILE *fopen_myfs(const char *pathStr, const char *method) {
+  FILE *f = (FILE *)malloc(sizeof(FILE));
+  memset(f, 0, sizeof(*f));
+
+  PATH *path = NULL;
+  FsErrors res = FsPathParse(fs->pathRoot, pathStr, &path);
+  if (res) {
+    PERRORD(res, "open: '%s'", pathStr);
+    FsPathFree(path);
+    free(f);
+    return NULL;
+  }
+  PATH *pathTail = FsPathGetTail(path);
+  if (pathTail->file->type != REGULAR_FILE) {
+    PERRORD(FS_IS_A_DIRECTORY, "open: '%s'", pathStr);
+    FsPathFree(path);
+    free(f);
+    return NULL;
+  }
+  FIL *target = pathTail->file;
+  f->_file = target->file;
+
+  FsPathFree(path);
+  return f;
+}
+
+int fclose_myfs(FILE *f) {
+  free(f);
+  return 0;
 }

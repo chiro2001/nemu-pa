@@ -20,11 +20,13 @@
 
 AM_INPUT_KEYBRD_T g_ev_;
 const char input_key_data[128] =
-    "\0\0\0\0\0\0\0\0\0\0\0\0\0"
+    "\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
     "`1234567890-=\b"
     "\tqwertyuiop[]\\"
     "\0asdfghjkl;'\n"
-    "\0zxcvbnm,./";
+    "\0zxcvbnm,./\0"
+    "\0\0\0 \0\0"
+    "\0\0\0\0\0\0\0\0\0\0";
 
 #ifndef KEYDOWN_MASK
 #define KEYDOWN_MASK 0x8000
@@ -34,13 +36,14 @@ void nanos_input_keybrd_(AM_INPUT_KEYBRD_T *kbd)
     __attribute__((optimize("O0")));
 
 void nanos_input_keybrd_(AM_INPUT_KEYBRD_T *kbd) {
-  kbd->keydown = ((*((uint32_t *)KBD_ADDR)) & KEYDOWN_MASK) != 0;
-  kbd->keycode = ((*((uint32_t *)KBD_ADDR)) & KEYDOWN_MASK)
-                     ? (*((uint32_t *)KBD_ADDR)) - KEYDOWN_MASK
-                     : (*((uint32_t *)KBD_ADDR));
-  if (kbd->keydown)
-    printf("input: keydown=%d, keycode=%d\n", (int)kbd->keydown,
-           (int)kbd->keycode);
+  static uint32_t key_data_read;
+  key_data_read = *((uint32_t *)KBD_ADDR);
+  kbd->keydown = ((key_data_read)&KEYDOWN_MASK) != 0;
+  kbd->keycode = ((key_data_read)&KEYDOWN_MASK) ? (key_data_read)-KEYDOWN_MASK
+                                                : (key_data_read);
+  // if (kbd->keydown)
+  //   printf("input: keydown=%d, keycode=%d\n", (int)kbd->keydown,
+  //          (int)kbd->keycode);
 }
 
 int readch_() {
@@ -63,7 +66,7 @@ int _read(int file, void *ptr, size_t len) {
   char *p = (char *)ptr;
   while (l--) {
     int c = readch_();
-    printf("got %d(%c)\n", c, (char)c);
+    // printf("got %d(%c)\n", c, (char)c);
     *(p++) = (char)c;
     break;
   }

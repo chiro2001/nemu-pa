@@ -15,7 +15,7 @@ void init_disk();
 void init_sdcard();
 void init_alarm();
 
-void send_key(uint8_t, bool);
+void send_key(uint8_t, bool) __attribute__((optimize("O0")));
 void vga_update_screen();
 
 void device_update() {

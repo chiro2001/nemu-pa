@@ -108,11 +108,11 @@
 #endif
 
 // sext
-#define imm_sext(val, width_val, width_exp)                               \
-  (((((val) >> ((width_val)-1)) & 0x01)                                   \
-        ? ((0xFFFFFFFF - ((1 << (width_val)) - 1)) | \
-           (val))                                                         \
-        : (val)) &                                                        \
+#define imm_sext_(val, width_val, width_exp)                \
+  (((((val) >> ((width_val)-1)) & 0x01)                     \
+        ? ((0xFFFFFFFF - ((1 << (width_val)) - 1)) | (val)) \
+        : (val)) &                                          \
    0xFFFFFFFF)
+#define imm_sext(val, width_val, width_exp) SEXT(val, width_exp)
 
 #define imm_sext32(val, width_val) imm_sext(val, width_val, 32)

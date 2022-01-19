@@ -14,6 +14,7 @@ char g_serial_buf[SERIAL_BUF_SIZE];
 char *g_serial_p;
 
 void serial_putc_buffed(char ch) {
+  // printf("PUTC(%c)\n", ch);
   if (g_serial_p - g_serial_buf < SERIAL_BUF_SIZE)
     *(g_serial_p++) = ch == '\n' ? '\0' : ch;
   if ((ch == '\0' || ch == '\n')) {

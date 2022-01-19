@@ -1,6 +1,8 @@
 #include <klib.h>
 #include <stdio.h>
 
+#ifndef __ARCH_NATIVE
+
 #if defined(__ARCH_X86_NEMU)
 #define DEVICE_BASE 0x0
 #else
@@ -72,3 +74,7 @@ int _read(int file, void *ptr, size_t len) {
   }
   return len - l;
 }
+
+#else
+// int _read(int file, void *ptr, size_t len) { return len; }
+#endif

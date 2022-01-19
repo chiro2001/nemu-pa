@@ -26,22 +26,23 @@ LD := $(CXX)
 INCLUDES = $(addprefix -I, $(INC_PATH))
 CFLAGS  := -O2 -MMD -Wall $(if $(CONFIG_EXT_ALL_WARNINGS_AS_ERRORS),-Werror,) $(INCLUDES) $(CFLAGS)
 LDFLAGS := -O2 $(LDFLAGS)
+LDFLAGS += -lpthread
 
 OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o) $(CXXSRC:%.cc=$(OBJ_DIR)/%.o)
+
+IS_SILENCE := $(if $(CONFIG_EXT_PRINT_MAKE_CMDS),,@)
 
 # Compilation patterns
 $(OBJ_DIR)/%.o: %.c
 	@echo + CC $<
 	@mkdir -p $(dir $@)
-	@$(if $(CONFIG_EXT_PRINT_MAKE_CMDS),echo $(CC) $(CFLAGS) -c -o $@ $<,)
-	@$(CC) $(CFLAGS) -c -o $@ $<
+	$(IS_SILENCE)$(CC) $(CFLAGS) -c -o $@ $<
 	$(call call_fixdep, $(@:.o=.d), $@)
 
 $(OBJ_DIR)/%.o: %.cc
 	@echo + CXX $<
 	@mkdir -p $(dir $@)
-	@$(if $(CONFIG_EXT_PRINT_MAKE_CMDS),echo $(CXX) $(CFLAGS) $(CXXFLAGS) -c -o $@ $<,)
-	@$(CXX) $(CFLAGS) $(CXXFLAGS) -c -o $@ $<
+	$(IS_SILENCE)$(CXX) $(CFLAGS) $(CXXFLAGS) -c -o $@ $<
 	$(call call_fixdep, $(@:.o=.d), $@)
 
 # Depencies
@@ -55,7 +56,7 @@ app: $(BINARY)
 
 $(BINARY): $(OBJS) $(ARCHIVES)
 	@echo + LD $@
-	@$(LD) -o $@ $(OBJS) $(LDFLAGS) $(ARCHIVES) $(LIBS)
+	$(IS_SILENCE)$(LD) -o $@ $(OBJS) $(LDFLAGS) $(ARCHIVES) $(LIBS)
 
 clean:
 	-rm -rf $(BUILD_DIR)

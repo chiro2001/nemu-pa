@@ -20,6 +20,14 @@ void vga_update_screen();
 
 void device_update() {
   static uint64_t last = 0;
+  static uint8_t div = 0;
+  const uint8_t divider = CONFIG_EXT_DEVICE_DIVIDER;
+  if (div != divider) {
+    div++;
+    return;
+  } else {
+    div = 0;
+  }
   uint64_t now = get_time();
   if (now - last < 1000000 / TIMER_HZ) {
     return;

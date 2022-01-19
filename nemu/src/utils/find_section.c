@@ -60,8 +60,8 @@ void elf_init_info(const char *filepath) {
   static char buf[256];
   char line[1024];
   int line_count = 0;
-  char buf_line_number[32], buf_addr[12], buf_unknown[12], buf_type[12],
-      buf_area[24], buf_type2[32], buf_1[2], buf_name[32];
+  char buf_line_number[32], buf_addr[12], buf_unknown[12], buf_type[32],
+      buf_area[24], buf_type2[32], buf_1[32], buf_name[32];
   // sprintf(buf, "riscv64-linux-gnu-readelf \"%s\" -s | grep FUNC | wc -l",
   //         filepath);
   sprintf(
@@ -82,7 +82,7 @@ void elf_init_info(const char *filepath) {
           "riscv64-linux-gnu-readelf \"%s\" -s | grep \"FUNC\\|NOTYPE\" | sort "
           "-k 2",
           filepath);
-  system(buf);
+  // system(buf);
   f = popen(buf, "r");
   bool read_elf_head = false;
   while (fgets(line, 1024, f)) {

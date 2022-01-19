@@ -275,4 +275,10 @@ config EXT_SHOW_ELF_SYMBOL_NUMBER
 config EXT_DECODE_OPTIM
   bool "Instruction Decode Optimization"
   default y
+config EXT_DEVICE_DIVIDER
+  int "Device update divider"
+  default 128
+config EXT_MULTI_THREAD
+  bool "Use multi-thread to decode instr"
+  default n
 endmenu

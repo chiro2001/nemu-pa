@@ -1,10 +1,10 @@
 #include <common.h>
-#include MUXDEF(CONFIG_TIMER_GETTIMEOFDAY, <sys/time.h>, <time.h>)
+#include MUXDEF(CONFIG_TIMER_GETTIMEOFDAY, <sys / time.h>, <time.h>)
 
 IFDEF(CONFIG_TIMER_CLOCK_GETTIME,
-    static_assert(CLOCKS_PER_SEC == 1000000, "CLOCKS_PER_SEC != 1000000"));
+      static_assert(CLOCKS_PER_SEC == 1000000, "CLOCKS_PER_SEC != 1000000"));
 IFDEF(CONFIG_TIMER_CLOCK_GETTIME,
-    static_assert(sizeof(clock_t) == 8, "sizeof(clock_t) != 8"));
+      static_assert(sizeof(clock_t) == 8, "sizeof(clock_t) != 8"));
 
 static uint64_t boot_time = 0;
 // static clock_t start_t = 0;
@@ -21,6 +21,9 @@ uint64_t get_time_internal() {
   clock_gettime(CLOCK_MONOTONIC_COARSE, &now);
   uint64_t us = now.tv_sec * 1000000 + now.tv_nsec / 1000;
   // uint64_t us = (clock() - start_t) * 1000000 / CLOCKS_PER_SEC;
+  // static uint64_t us_last = 0;
+  // if (us != us_last) Log("us = %lu", us);
+  // us_last = us;
 #endif
   return us;
 }

@@ -3,6 +3,8 @@
 #include <cpu/exec.h>
 #include <isa-all-instr.h>
 #include <locale.h>
+#include <pthread.h>
+#include <signal.h>
 
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
@@ -41,7 +43,56 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 static const void *g_exec_table[TOTAL_INSTR] = {
     MAP(INSTR_LIST, FILL_EXEC_TABLE)};
 
+Decode g_s;
+vaddr_t g_s_pc = 0x00000000;
+static bool fetch_decode_run = true;
+pthread_spinlock_t instr_lock;
+static pthread_t instr_thread_id = 0;
+
+static uint32_t instr_missed = 0;
+void my_on_exit() {
+  if (instr_thread_id) {
+    pthread_kill(instr_thread_id, SIGINT);
+  } else {
+    Log("instr_missed = " FMT_WORD, instr_missed);
+  }
+}
+void sign_handle(int sign) {
+  my_on_exit();
+  exit(0);
+}
+
+void fetch_decode_background() {
+  static vaddr_t pc_decoded = 0;
+  instr_thread_id = 0;
+  while (fetch_decode_run) {
+    if (!g_s_pc) continue;
+    if (pc_decoded == g_s_pc) {
+      instr_missed++;
+      continue;
+    }
+    pthread_spin_lock(&instr_lock);
+    vaddr_t pc_target = g_s_pc;
+    fetch_decode(&g_s, pc_target);
+    pthread_spin_unlock(&instr_lock);
+    pc_decoded = pc_target;
+  }
+}
+
 static void fetch_decode_exec_updatepc(Decode *s) {
+#ifdef CONFIG_EXT_MULTI_THREAD
+  if (g_s_pc == cpu.pc) {
+    pthread_spin_lock(&instr_lock);
+    *s = g_s;
+    g_s_pc = cpu.pc + 4;
+    pthread_spin_unlock(&instr_lock);
+  } else {
+    pthread_spin_lock(&instr_lock);
+    g_s_pc = cpu.pc + 4;
+    pthread_spin_unlock(&instr_lock);
+    // Log("No instr decode predecode at " FMT_WORD, cpu.pc);
+  }
+#endif
   fetch_decode(s, cpu.pc);
   s->EHelper(s);
   cpu.pc = s->dnpc;
@@ -73,7 +124,8 @@ void fetch_decode(Decode *s, vaddr_t pc) {
   s->EHelper = g_exec_table[idx];
 #ifdef CONFIG_TRACE
   char *p = s->logbuf;
-  p += snprintf(p, sizeof(s->logbuf), "%07d " FMT_WORD ":", (int)g_nr_guest_instr, s->pc);
+  p += snprintf(p, sizeof(s->logbuf), "%07d " FMT_WORD ":",
+                (int)g_nr_guest_instr, s->pc);
   int ilen = s->snpc - s->pc;
   int i;
   uint8_t *instr = (uint8_t *)&s->isa.instr.val;
@@ -109,6 +161,18 @@ void cpu_exec(uint64_t n) {
 
   uint64_t timer_start = get_time();
 
+  signal(SIGINT, sign_handle);
+
+#ifdef CONFIG_EXT_MULTI_THREAD
+  // start instr decode thread
+  // DEFINE_SPINLOCK(instr_lock);
+  int spin_ret = pthread_spin_init(&instr_lock, PTHREAD_PROCESS_SHARED);
+  Assert(spin_ret == 0, "Cannot create spinlock!");
+  int thread_ret = pthread_create(&instr_thread_id, NULL,
+                                  (void *)fetch_decode_background, NULL);
+
+  Assert(thread_ret == 0, "Cannot create instr decode thread!");
+#endif
   Decode s;
   for (; n > 0; n--) {
     fetch_decode_exec_updatepc(&s);
@@ -117,6 +181,11 @@ void cpu_exec(uint64_t n) {
     if (nemu_state.state != NEMU_RUNNING) break;
     IFDEF(CONFIG_DEVICE, device_update());
   }
+
+#ifdef CONFIG_EXT_MULTI_THREAD
+  fetch_decode_run = false;
+  pthread_join(instr_thread_id, NULL);
+#endif
 
   IFDEF(CONFIG_DEVICE, serial_putc_buffed(0xFF));
 
@@ -140,5 +209,6 @@ void cpu_exec(uint64_t n) {
       // fall through
     case NEMU_QUIT:
       statistic();
+      my_on_exit();
   }
 }

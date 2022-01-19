@@ -9,7 +9,7 @@
 #include "dat.h"
 #include "fns.h"
 
-#ifdef AM
+#ifdef __AM__
 #include "fs.h"
 // #define fread fread_ramdisk
 // #define fseek fseek_ramdisk

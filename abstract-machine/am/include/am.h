@@ -1,8 +1,8 @@
 #ifndef AM_H__
 #define AM_H__
 
-#ifndef AM
-#define AM
+#ifndef __AM__
+#define __AM__
 #endif
 
 #include <stdint.h>

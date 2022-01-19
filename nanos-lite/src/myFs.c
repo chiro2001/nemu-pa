@@ -676,11 +676,17 @@ extern Fs fs;
 
 FIL *FsFilFindByFile(size_t file) { return files_list[file]; }
 
+#ifdef __AM__
+#define get_file_no(f) (f->_file)
+#else
+#define get_file_no(f) (f->_fileno)
+#endif
+
 size_t fread_myfs(void *buf, size_t size, size_t n, FILE *f) {
   // Log("fread(0x%08x, %d, %d, 0x%08x), offset = 0x%08x", (size_t)buf, (int)size,
   //     (int)n, (size_t)f, (size_t)f->_offset);
   // size_t res = myfs_read(buf, f->_offset, size * n) / size;
-  FIL *target = FsFilFindByFile(f->_file);
+  FIL *target = FsFilFindByFile(get_file_no(f));
   // size_t res = (size + f->_offset) < target->size_file ? n :
   // (target->size_file - offset) / size;
   size_t res = n;
@@ -690,7 +696,7 @@ size_t fread_myfs(void *buf, size_t size, size_t n, FILE *f) {
 }
 
 size_t fseek_myfs(FILE *f, size_t offset, size_t direction) {
-  FIL *target = FsFilFindByFile(f->_file);
+  FIL *target = FsFilFindByFile(get_file_no(f));
   f->_offset = offset < target->size_file ? offset : target->size_file;
   return 0;
 }
@@ -715,7 +721,7 @@ FILE *fopen_myfs(const char *pathStr, const char *method) {
     return NULL;
   }
   FIL *target = pathTail->file;
-  f->_file = target->file;
+  get_file_no(f) = target->file;
 
   FsPathFree(path);
   return f;

@@ -15,15 +15,15 @@ NEMUFLAGS += -b -l $(shell dirname $(IMAGE).elf)/nemu-log.txt
 
 CFLAGS += -DMAINARGS=\"$(mainargs)\"
 CFLAGS += -I$(AM_HOME)/am/src/platform/nemu/include
-.PHONY: $(AM_HOME)/am/src/platform/nemu/trm.c
+# .PHONY: $(AM_HOME)/am/src/platform/nemu/trm.c
 
 image: $(IMAGE).elf
-	@$(OBJDUMP) -d $(IMAGE).elf | expand -t 9 > $(IMAGE).txt
+	$(APREFIX)@$(OBJDUMP) -d $(IMAGE).elf | expand -t 9 > $(IMAGE).txt
 	@echo + OBJCOPY "->" $(IMAGE_REL).bin
-	@$(OBJCOPY) -S --set-section-flags .bss=alloc,contents -O binary $(IMAGE).elf $(IMAGE).bin
+	$(APREFIX)@$(OBJCOPY) -S --set-section-flags .bss=alloc,contents -O binary $(IMAGE).elf $(IMAGE).bin
 
 run: image
-	$(MAKE) -C $(NEMU_HOME) ISA=$(ISA) run ARGS="$(NEMUFLAGS)" IMG=$(IMAGE).bin
+	$(APREFIX)$(MAKE) -C $(NEMU_HOME) ISA=$(ISA) run ARGS="$(NEMUFLAGS)" IMG=$(IMAGE).bin
 
 gdb: image
-	$(MAKE) -C $(NEMU_HOME) ISA=$(ISA) gdb ARGS="$(NEMUFLAGS)" IMG=$(IMAGE).bin
+	$(APREFIX)$(MAKE) -C $(NEMU_HOME) ISA=$(ISA) gdb ARGS="$(NEMUFLAGS)" IMG=$(IMAGE).bin

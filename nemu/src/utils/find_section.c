@@ -62,24 +62,23 @@ void elf_init_info(const char *filepath) {
   int line_count = 0;
   char buf_line_number[32], buf_addr[12], buf_unknown[12], buf_type[32],
       buf_area[24], buf_type2[32], buf_1[32], buf_name[32];
-  // sprintf(buf, "riscv64-linux-gnu-readelf \"%s\" -s | grep FUNC | wc -l",
+  // sprintf(buf, CONFIG_EXT_READELF " \"%s\" -s | grep FUNC | wc -l",
   //         filepath);
-  sprintf(
-      buf,
-      "riscv64-linux-gnu-readelf \"%s\" -s | grep \"FUNC\\|NOTYPE\" | wc -l",
-      filepath);
+  sprintf(buf, CONFIG_EXT_READELF " \"%s\" -s | grep \"FUNC\\|NOTYPE\" | wc -l",
+          filepath);
   FILE *f = popen(buf, "r");
   int r = fscanf(f, "%d", &line_count);
   assert(r);
-  Log("ELF Read %d Sections.", (int)line_count);
+  // Log("ELF Read %d Sections.", (int)line_count);
   sections = malloc(sizeof(SectionNode) * line_count);
   memset(sections, 0, sizeof(SectionNode) * line_count);
   assert(sections);
   sections_tail = sections;
-  // sprintf(buf, "riscv64-linux-gnu-readelf \"%s\" -s | grep FUNC | sort -k 2",
+  // sprintf(buf, CONFIG_EXT_READELF " \"%s\" -s | grep FUNC | sort -k 2",
   //         filepath);
   sprintf(buf,
-          "riscv64-linux-gnu-readelf \"%s\" -s | grep \"FUNC\\|NOTYPE\" | sort "
+          CONFIG_EXT_READELF
+          " \"%s\" -s | grep \"FUNC\\|NOTYPE\" | sort "
           "-k 2",
           filepath);
   // system(buf);
@@ -103,13 +102,14 @@ void elf_init_info(const char *filepath) {
     if (ret != 8) continue;
     strcpy(sections_tail->name, buf_name);
     sscanf(buf_addr, "%x", &sections_tail->addr);
-// #define CONFIG_READELF_OFFSET 0xc0000040
-//     if (sections_tail->addr >= CONFIG_READELF_OFFSET)
-//       sections_tail->addr -= CONFIG_READELF_OFFSET;
-//     else
-//       continue;
-//     sections_tail->addr += CONFIG_MBASE;
-    // Log("ELF Read: " FMT_WORD " : %s", sections_tail->addr, sections_tail->name);
+    // #define CONFIG_READELF_OFFSET 0xc0000040
+    //     if (sections_tail->addr >= CONFIG_READELF_OFFSET)
+    //       sections_tail->addr -= CONFIG_READELF_OFFSET;
+    //     else
+    //       continue;
+    //     sections_tail->addr += CONFIG_MBASE;
+    // Log("ELF Read: " FMT_WORD " : %s", sections_tail->addr,
+    // sections_tail->name);
     sections_tail++;
   }
   sections_tail--;
@@ -178,7 +178,7 @@ void elf_init() {
   // assert(name);
   const char *path = NULL;
   if (strcmp(name, "Image") == 0) {
-    path = "/home/chiro/Downloads/linux-5.4.168/vmlinux";
+    path = CONFIG_EXT_LINUX_KERNEL_PATH;
   } else {
     path = elf_find_path(name);
   }

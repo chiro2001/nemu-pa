@@ -45,23 +45,11 @@ static const void *g_exec_table[TOTAL_INSTR] = {
 
 Decode g_s;
 vaddr_t g_s_pc = 0x00000000;
-static bool fetch_decode_run = true;
 pthread_spinlock_t instr_lock;
 static pthread_t instr_thread_id = 0;
-
+#ifdef CONFIG_EXT_MULTI_THREAD
 static uint32_t instr_missed = 0;
-void my_on_exit() {
-  if (instr_thread_id) {
-    pthread_kill(instr_thread_id, SIGINT);
-  } else {
-    Log("instr_missed = " FMT_WORD, instr_missed);
-  }
-}
-void sign_handle(int sign) {
-  my_on_exit();
-  exit(0);
-}
-
+static bool fetch_decode_run = true;
 void fetch_decode_background() {
   static vaddr_t pc_decoded = 0;
   instr_thread_id = 0;
@@ -77,6 +65,19 @@ void fetch_decode_background() {
     pthread_spin_unlock(&instr_lock);
     pc_decoded = pc_target;
   }
+}
+#endif
+void my_on_exit() {
+  if (instr_thread_id) {
+    pthread_kill(instr_thread_id, SIGINT);
+  } else {
+    IFDEF(CONFIG_EXT_MULTI_THREAD,
+          Log("instr_missed = " FMT_WORD, instr_missed));
+  }
+}
+void sign_handle(int sign) {
+  my_on_exit();
+  exit(0);
 }
 
 static void fetch_decode_exec_updatepc(Decode *s) {
@@ -138,10 +139,12 @@ void fetch_decode(Decode *s, vaddr_t pc) {
   space_len = space_len * 3 + 1;
   memset(p, ' ', space_len);
   p += space_len;
+#ifdef CONFIG_ITRACE
   void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
   disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
               MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc),
               (uint8_t *)&s->isa.instr.val, ilen);
+#endif
 #endif
 }
 
@@ -199,13 +202,14 @@ void cpu_exec(uint64_t n) {
 
     case NEMU_END:
     case NEMU_ABORT:
-      Log("nemu: %s at pc = " FMT_WORD " @%s",
+      Log("nemu: %s at %07ld pc = " FMT_WORD " @%s",
           (nemu_state.state == NEMU_ABORT
                ? ASNI_FMT("ABORT", ASNI_FG_RED)
                : (nemu_state.halt_ret == 0
                       ? ASNI_FMT("HIT GOOD TRAP", ASNI_FG_GREEN)
                       : ASNI_FMT("HIT BAD TRAP", ASNI_FG_RED))),
-          nemu_state.halt_pc, find_section(nemu_state.halt_pc));
+          g_nr_guest_instr, nemu_state.halt_pc,
+          find_section(nemu_state.halt_pc));
       // fall through
     case NEMU_QUIT:
       statistic();

@@ -42,23 +42,23 @@ def_EHelper(sltiu) { rtl_li(s, ddest, *dsrc1 < id_src2->imm ? 1 : 0); }
 #ifdef CONFIG_EXT_PRINT_JUMP
 static rtlreg_t last = 0;
 static rtlreg_t last2 = 0;
-#define jump_info(target)                                                      \
-  do {                                                                         \
-    extern uint64_t g_nr_guest_instr;                                          \
-    extern bool log_enable();                                                  \
-    if ((((last != target && last2 != last) || (last == 0 || last2 == 0)) &&   \
-         log_enable())) {                                                      \
-      const char *section_name = find_section(target);                         \
-      if (*section_name == '<') {                                              \
-        IFDEF(CONFIG_EXT_PRINT_JUMP_MORE,                                           \
-              MUXDEF(CONFIG_EXT_PRINT_SECTIONS,                                \
-                     Log("\t%07d " FMT_WORD " @%s", (int)g_nr_guest_instr,     \
-                         target, section_name),                                \
-                     Log("\t%07d " FMT_WORD, (int)g_nr_guest_instr, target))); \
-      }                                                                        \
-      last2 = last;                                                            \
-      last = target;                                                           \
-    }                                                                          \
+#define jump_info(target)                                                     \
+  do {                                                                        \
+    extern uint64_t g_nr_guest_instr;                                         \
+    extern bool log_enable();                                                 \
+    if ((((last != target && last2 != last) || (last == 0 || last2 == 0))) && \
+        MUXDEF(CONFIG_EXT_PRINT_JUMP_MORE, true, log_enable())) {             \
+      MUXDEF(                                                                 \
+          CONFIG_EXT_PRINT_SECTIONS,                                          \
+          {                                                                   \
+            const char *section_name = find_section(target);                  \
+            Log("\t%07d " FMT_WORD " @%s", (int)g_nr_guest_instr, target,     \
+                section_name);                                                \
+          },                                                                  \
+          { Log("\t%07d " FMT_WORD, (int)g_nr_guest_instr, target); });       \
+      last2 = last;                                                           \
+      last = target;                                                          \
+    }                                                                         \
   } while (0)
 #else
 #define jump_info(target)

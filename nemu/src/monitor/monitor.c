@@ -10,15 +10,9 @@ void init_sdb();
 void init_disasm(const char *triple);
 
 static void welcome() {
-  IFDEF(CONFIG_TRACE,
-        Log("If trace is enabled, a log file will be generated "
-            "to record the trace. This may lead to a large log file. "
-            "If it is not necessary, you can disable it in menuconfig"));
-
   Log("Build time: %s, %s", __TIME__, __DATE__);
-  printf("Welcome to %s-NEMU!\n",
+  printf("Welcome to %s-NEMU! " "For help, type \"help\"\n",
          ASNI_FMT(str(__GUEST_ISA__), ASNI_FG_YELLOW ASNI_BG_RED));
-  printf("For help, type \"help\"\n");
 }
 
 #ifndef CONFIG_TARGET_AM

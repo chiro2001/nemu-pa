@@ -30,19 +30,19 @@ LDFLAGS += -lpthread
 
 OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o) $(CXXSRC:%.cc=$(OBJ_DIR)/%.o)
 
-IS_SILENCE := $(if $(CONFIG_EXT_PRINT_MAKE_CMDS),,@)
+APREFIX := $(if $(CONFIG_EXT_PRINT_MAKE_CMDS),,@)
 
 # Compilation patterns
 $(OBJ_DIR)/%.o: %.c
 	@echo + CC $<
 	@mkdir -p $(dir $@)
-	$(IS_SILENCE)$(CC) $(CFLAGS) -c -o $@ $<
+	$(APREFIX)$(CC) $(CFLAGS) -c -o $@ $<
 	$(call call_fixdep, $(@:.o=.d), $@)
 
 $(OBJ_DIR)/%.o: %.cc
 	@echo + CXX $<
 	@mkdir -p $(dir $@)
-	$(IS_SILENCE)$(CXX) $(CFLAGS) $(CXXFLAGS) -c -o $@ $<
+	$(APREFIX)$(CXX) $(CFLAGS) $(CXXFLAGS) -c -o $@ $<
 	$(call call_fixdep, $(@:.o=.d), $@)
 
 # Depencies
@@ -56,7 +56,7 @@ app: $(BINARY)
 
 $(BINARY): $(OBJS) $(ARCHIVES)
 	@echo + LD $@
-	$(IS_SILENCE)$(LD) -o $@ $(OBJS) $(LDFLAGS) $(ARCHIVES) $(LIBS)
+	$(APREFIX)$(LD) -o $@ $(OBJS) $(LDFLAGS) $(ARCHIVES) $(LIBS)
 
 clean:
 	-rm -rf $(BUILD_DIR)

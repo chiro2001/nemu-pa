@@ -91,8 +91,8 @@ void difftest_init(int port) {
                 NULL, reg_t(-1), difftest_mem, difftest_plugin_devices,
                 difftest_htif_args, std::move(difftest_hartids),
                 difftest_dm_config, nullptr, false,
-                // NULL);
-                CONFIG_EXT_DTS_FILE);
+                NULL);
+                // CONFIG_EXT_DTS_FILE);
   s->diff_init(port);
 }
 

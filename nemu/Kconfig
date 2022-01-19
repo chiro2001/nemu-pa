@@ -152,10 +152,18 @@ config ITRACE_COND
 config EXT_PRINT_JUMP
   bool "Jump TRACE"
   default n
-
 config EXT_PRINT_JUMP_MORE
   bool "Jump TRACE disp every jump"
   default n
+config EXT_PRINT_SECTIONS
+  bool "Load & print section info"
+  default n
+config EXT_PRINT_LOADSAVE
+  bool "Print load & save"
+  default n
+config EXT_PRINT_MAKE_CMDS
+  bool "Print cmdlines called by Make"
+  default y
 
 
 config DIFFTEST
@@ -227,18 +235,9 @@ comment "Added by Chiro"
 config EXT_RUN_CONFIG_FILE
   string "Default config file to read when no args provided"
   default ".nemu_run_args"
-config EXT_PRINT_SECTIONS
-  bool "Load & print section info"
-  default n
-config EXT_PRINT_LOADSAVE
-  bool "Print load & save"
-  default n
 config EXT_PRINT_ARGS
   bool "Print launch args"
   default n
-config EXT_PRINT_MAKE_CMDS
-  bool "Print cmdlines called by Make"
-  default y
 config EXT_CC_AM_OPT
   string "CC Option for AM"
   default "O3"
@@ -284,4 +283,19 @@ config EXT_MULTI_THREAD
 config EXT_DTS_FILE
   string "Device Tree String file"
   default "resource/devices/riscv32-spike.dts"
+config EXT_SKIP_COMPILE_DIFF
+  bool "Skip compile diff-so if exists"
+  default y
+config EXT_FAST_BUILD
+  bool "Try to build faster, ignore some cached linking"
+  default y
+config EXT_SHOW_MMIO
+  bool "Display MMIO Devices at startup"
+  default n
+config EXT_READELF
+  string "Readelf excutable file to find elf sections"
+  default "riscv64-linux-gnu-readelf"
+config EXT_LINUX_KERNEL_PATH
+  string "Path of Linux kernel (when `IMG=Image`)"
+  default "/home/chiro/Downloads/linux-5.4.168/vmlinux"
 endmenu

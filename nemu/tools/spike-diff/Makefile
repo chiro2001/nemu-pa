@@ -6,13 +6,13 @@ endif
 REPO_BUILD_PATH = $(REPO_PATH)/build
 REPO_MAKEFILE = $(REPO_BUILD_PATH)/Makefile
 $(REPO_MAKEFILE):
-	@mkdir -p $(@D)
+	mkdir -p $(@D)
 	cd $(@D) && $(abspath $(REPO_PATH))/configure
 	sed -i -e 's/-g -O2/-O2/' $@
 
 SPIKE = $(REPO_BUILD_PATH)/spike
 $(SPIKE): $(REPO_MAKEFILE)
-	$(MAKE) -C $(^D)
+	$(MAKE) -C $(^D) CFLAGS="-g" CXXFLAGS="-g"
 
 BUILD_DIR = ./build
 $(shell mkdir -p $(BUILD_DIR))
@@ -28,8 +28,7 @@ BINARY = $(BUILD_DIR)/$(NAME)
 SRCS = difftest.cc
 
 $(BINARY): $(SPIKE) $(SRCS)
-	g++ -O2 -shared -fPIC $(INC_PATH) $(SRCS) $(INC_LIBS) -o $@
-
+	g++ -g -O2 -shared -fPIC $(INC_PATH) $(SRCS) $(INC_LIBS) -o $@
 clean:
 	rm -rf $(BUILD_DIR)
 

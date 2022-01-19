@@ -7,7 +7,14 @@
               "${workspaceFolder}/nemu/include",
               "${workspaceFolder}/abstract-machine/am/include",
               "${workspaceFolder}/abstract-machine/klib/include",
-              "~/Downloads/riscv/riscv32-unknown-elf/include/"
+              "~/Downloads/riscv/riscv32-unknown-elf/include/",
+              "${workspaceFolder}/nemu/tools/spike-diff/repo/riscv",
+              "${workspaceFolder}/nemu/tools/spike-diff/repo/riscv/insns",
+              "${workspaceFolder}/nemu/tools/spike-diff/repo",
+              "${workspaceFolder}/nemu/tools/spike-diff/repo/fdt",
+              "${workspaceFolder}/nemu/tools/spike-diff/repo/build",
+              "${workspaceFolder}/nemu/tools/spike-diff/repo/softfloat",
+              "${workspaceFolder}/nemu/tools/spike-diff/repo/fesvr"
           ],
           "defines": [
             "__GUEST_ISA__=riscv32",

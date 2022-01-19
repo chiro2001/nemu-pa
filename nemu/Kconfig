@@ -281,4 +281,7 @@ config EXT_DEVICE_DIVIDER
 config EXT_MULTI_THREAD
   bool "Use multi-thread to decode instr"
   default n
+config EXT_DTS_FILE
+  string "Device Tree String file"
+  default "resource/devices/riscv32-spike.dts"
 endmenu

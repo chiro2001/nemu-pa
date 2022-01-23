@@ -12,6 +12,11 @@ size_t fseek_ramdisk(FILE *f, size_t offset, size_t direction);
 FILE *fopen_ramdisk(const char *filename, const char *method);
 int fclose_ramdisk(FILE *f);
 
+size_t fread(void *buf, size_t size, size_t n, FILE *f);
+int fseek(FILE *f, long offset, int direction);
+FILE *fopen(const char *filename, const char *method);
+int fclose(FILE *f);
+
 #include "myFs.h"
 
 extern Fs fs;

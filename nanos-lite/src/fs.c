@@ -1,9 +1,9 @@
 #include <fs.h>
 
+#include "amdev.h"
 #include "arch.h"
 #include "myFs.h"
 #include "syscall.h"
-#include "amdev.h"
 
 extern uint8_t ramdisk_start;
 
@@ -25,8 +25,6 @@ void nanos_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
                      : (*((uint32_t *)KBD_ADDR));
 }
 
-enum { FD_STDIN, FD_STDOUT, FD_STDERR, FD_FB };
-
 size_t invalid_read(void *buf, size_t offset, size_t len) {
   panic("should not reach here");
   return 0;
@@ -42,7 +40,7 @@ size_t kbd_read(void *buf, size_t offset, size_t len) {
   while (len--) {
     int c = fgetc(stdin);
     if (c == EOF) return EOF;
-    *p = (uint8_t) c;
+    *p = (uint8_t)c;
     p++;
   }
   return 0;
@@ -53,6 +51,7 @@ static Finfo file_table[] __attribute__((used)) = {
     [FD_STDIN] = {"stdin", 0, 0, kbd_read, invalid_write},
     [FD_STDOUT] = {"stdout", 0, 0, invalid_read, invalid_write},
     [FD_STDERR] = {"stderr", 0, 0, invalid_read, invalid_write},
+    [FD_FB] = {"/dev/fb", 0, 0, invalid_read, invalid_write},
 #include "files.h"
 };
 
@@ -66,10 +65,9 @@ void init_fs() {
   file_count = sizeof(file_table) / sizeof(Finfo);
   Log("Loading %d files...", (int)file_count);
   // mkdirs
-  char dirs[][32] = {"/share",       "/share/pictures", "/share/fonts",
-                     "/share/files", "/share/music",    "/share/music/rhythm",
-                     "/share/games", "/share/games/bird", 
-                     "/bin"};
+  char dirs[][32] = {"/share",       "/share/pictures",   "/share/fonts",
+                     "/share/files", "/share/music",      "/share/music/rhythm",
+                     "/share/games", "/share/games/bird", "/bin"};
   for (size_t i = 0; i < sizeof(dirs) / 32; i++) {
     // Log("MkDir: %s", dirs[i]);
     FsMkdir(fs, dirs[i]);
@@ -93,3 +91,34 @@ void init_fs() {
     FsWrite(target, fd->size, (&ramdisk_start) + fd->disk_offset, FS_WRITE_NEW);
   }
 }
+
+#ifdef __AM__
+
+size_t fread(void *buf, size_t size, size_t n, FILE *f) {
+  if (!f) return 0;
+  if (f->_file < FD_UNUSED) {
+    return fread_ramdisk(buf, size, n, f);
+  } else {
+    return fread_myfs(buf, size, n, f);
+  }
+}
+int fseek(FILE *f, long offset, int direction) {
+  if (!f) return EOF;
+  if (f->_file < FD_UNUSED) {
+    return fseek_ramdisk(f, offset, direction);
+  } else {
+    return fseek_myfs(f, offset, direction);
+  }
+}
+FILE *fopen(const char *filename, const char *method) {
+  if (!filename) return fopen("stdout", "w");
+  for (size_t i = 0; i < FD_UNUSED; i++) {
+    if (strcmp(filename, file_table[i].name) == 0) {
+      return fopen_ramdisk(filename, method);
+    }
+  }
+  return fopen_myfs(filename, method);
+}
+// int fclose(FILE *f) {}
+
+#endif

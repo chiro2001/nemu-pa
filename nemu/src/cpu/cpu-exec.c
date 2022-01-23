@@ -100,13 +100,14 @@ static void fetch_decode_exec_updatepc(Decode *s) {
 }
 
 void statistic() {
+  uint64_t instr_per_second = g_nr_guest_instr * 1000000 / g_timer;
   IFNDEF(CONFIG_TARGET_AM, setlocale(LC_NUMERIC, ""));
 #define NUMBERIC_FMT MUXDEF(CONFIG_TARGET_AM, "%ld", "%'ld")
   Log("host time spent = " NUMBERIC_FMT " us", g_timer);
   Log("total guest instructions = " NUMBERIC_FMT, g_nr_guest_instr);
   if (g_timer > 0)
-    Log("simulation frequency = " NUMBERIC_FMT " instr/s",
-        g_nr_guest_instr * 1000000 / g_timer);
+    Log("simulation frequency = " NUMBERIC_FMT " instr/s (%.3lf Mhz)",
+        instr_per_second, (double)instr_per_second / 1000000);
   else
     Log("Finish running in less than 1 us and can not calculate the simulation "
         "frequency");

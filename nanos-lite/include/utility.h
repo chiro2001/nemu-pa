@@ -13,6 +13,11 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#ifndef FD_NUM
+#define FD_NUM
+enum FD_NUM_T { FD_STDIN, FD_STDOUT, FD_STDERR, FD_FB, FD_UNUSED };
+#endif
+
 typedef enum {
   REGULAR_FILE,
   DIRECTORY,
@@ -157,7 +162,7 @@ int FsWrite(FIL *target, size_t size, void *src, int mode);
 int FsRead(FIL *target, size_t offset, size_t size, void *dst);
 
 extern size_t file_tail;
-#define MYFS_FILE_START 0x40
+#define MYFS_FILE_START FD_UNUSED
 #define MYFS_FILE_MAX 512
 extern FIL *files_list[MYFS_FILE_MAX];
 

@@ -676,12 +676,6 @@ extern Fs fs;
 
 FIL *FsFilFindByFile(size_t file) { return files_list[file]; }
 
-#ifdef __AM__
-#define get_file_no(f) (f->_file)
-#else
-#define get_file_no(f) (f->_fileno)
-#endif
-
 size_t fread_myfs(void *buf, size_t size, size_t n, FILE *f) {
   // Log("fread(0x%08x, %d, %d, 0x%08x), offset = 0x%08x", (size_t)buf, (int)size,
   //     (int)n, (size_t)f, (size_t)f->_offset);

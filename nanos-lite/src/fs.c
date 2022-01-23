@@ -77,12 +77,6 @@ void init_fs() {
     Finfo *fd = &file_table[i];
     // 只加载普通文件
     if (fd->read != NULL) continue;
-    char *p = fd->name;
-    bool ready_to_load = true;
-    // while (*p && *p != '.') p++;
-    // if (*p) ready_to_load = false;
-    if (!ready_to_load) continue;
-    // Log("Loading %s...", fd->name);
     FIL *target = FsMkfile(fs, fd->name);
     if (!target) {
       Log("Failed to create file!");
@@ -92,11 +86,9 @@ void init_fs() {
   }
 }
 
-#ifdef __AM__
-
 size_t fread(void *buf, size_t size, size_t n, FILE *f) {
   if (!f) return 0;
-  if (f->_file < FD_UNUSED) {
+  if (get_file_no(f) < FD_UNUSED) {
     return fread_ramdisk(buf, size, n, f);
   } else {
     return fread_myfs(buf, size, n, f);
@@ -104,7 +96,7 @@ size_t fread(void *buf, size_t size, size_t n, FILE *f) {
 }
 int fseek(FILE *f, long offset, int direction) {
   if (!f) return EOF;
-  if (f->_file < FD_UNUSED) {
+  if (get_file_no(f) < FD_UNUSED) {
     return fseek_ramdisk(f, offset, direction);
   } else {
     return fseek_myfs(f, offset, direction);
@@ -120,5 +112,3 @@ FILE *fopen(const char *filename, const char *method) {
   return fopen_myfs(filename, method);
 }
 // int fclose(FILE *f) {}
-
-#endif

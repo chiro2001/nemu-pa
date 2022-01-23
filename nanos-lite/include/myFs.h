@@ -49,4 +49,10 @@ FILE *fopen_myfs(const char *pathStr, const char *method);
 
 int fclose_myfs(FILE *f);
 
+#ifndef __ARCH_NATIVE
+#define get_file_no(f) (f->_file)
+#else
+#define get_file_no(f) (f->_fileno)
+#endif
+
 #endif

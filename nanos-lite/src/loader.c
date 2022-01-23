@@ -44,12 +44,12 @@ uintptr_t loader(PCB *pcb, const char *filename) {
   check(fp->readelfehdr(f, fp));
   check(readelfstrndx(f, fp));
   check(readelfshdrs(f, fp));
-  
+
   // check(fseek_ramdisk(f, fp->phoff, SEEK_SET));
   check(fseek_myfs(f, fp->phoff, SEEK_SET));
 
   entry = fp->entry;
-  Log("Found entry at: 0x%08x", entry);
+  // Log("Found entry at: 0x%08x", entry);
 
   for (int i = 0; i < fp->phnum; i++) {
     // PINT(i);
@@ -84,6 +84,10 @@ uintptr_t loader(PCB *pcb, const char *filename) {
 
 void naive_uload(PCB *pcb, const char *filename) {
   uintptr_t entry = loader(pcb, filename);
-  Log("Jump to entry = %p", (void *)entry);
+  if (entry == (uint32_t)(-1)) {
+    Log("Failed to load entry at 0x%08x", entry);
+    return;
+  }
+  // Log("Jump to entry = %p", (void *)entry);
   ((void (*)())entry)();
 }

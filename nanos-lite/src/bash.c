@@ -1,34 +1,33 @@
+#include "am.h"
 #include "fs.h"
+#include ARCH_H
+
+void init_on_yield(void (*target)(Event, Context *));
 
 extern Fs fs;
 
 char input[FS_PATH_MAX];
 char cwd[FS_PATH_MAX + 1];
 
+bool user_running = false;
+
+void bash_return(Event e, Context *c) { bash(NULL); }
+
 int bash_exec(char *pathStr) {
-  // PATH *path = NULL;
-  // FsErrors res = FsPathParse(fs->pathRoot, pathStr, &path);
-  // if (res) {
-  //   PERRORD(res, "'%s'", pathStr);
-  //   FsPathFree(path);
-  //   return;
-  // }
-  // PATH *pathTail = FsPathGetTail(path);
-  // if (pathTail->file->type != REGULAR_FILE) {
-  //   PERRORD(FS_IS_A_DIRECTORY, "'%s'", pathStr);
-  //   FsPathFree(path);
-  //   return;
-  // }
-  // FIL *target = pathTail->file;
-  
-  // FsPathFree(path);
+  user_running = true;
   naive_uload(current, pathStr);
+  user_running = false;
   return 0;
 }
 
 void bash(Fs fs_) {
-  fs = fs_;
-  puts("======= WHERECOME TO BASH ========");
+  init_on_yield(bash_return);
+  if (fs_) fs = fs_;
+  if (user_running) {
+    puts("======= BACK TO BASH ========");
+    user_running = false;
+  } else
+    puts("======= WHERECOME TO BASH ========");
   if (!fs) {
     fs = FsNew();
   }
@@ -130,4 +129,5 @@ void bash(Fs fs_) {
   }
   if (!fs_) FsFree(fs);
   puts("======= BYE ========");
+  panic("Bash exit.");
 }

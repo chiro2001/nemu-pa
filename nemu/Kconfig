@@ -150,19 +150,20 @@ config ITRACE_COND
 
 
 config EXT_PRINT_JUMP
-  bool "Jump TRACE"
+  bool "Enable Jump TRACE"
   default n
 config EXT_PRINT_JUMP_MORE
-  bool "Jump TRACE disp every jump"
+  depends on EXT_PRINT_JUMP
+  bool "Always enable Jump TRACE"
   default n
 config EXT_PRINT_SECTIONS
-  bool "Load & print section info"
+  bool "Enbale ELF section info"
   default n
 config EXT_PRINT_LOADSAVE
-  bool "Print load & save"
+  bool "Show load and save"
   default n
 config EXT_PRINT_MAKE_CMDS
-  bool "Print cmdlines called by Make"
+  bool "Make verbosly"
   default y
 
 
@@ -217,7 +218,7 @@ menu "Miscellaneous"
 choice
   depends on !TARGET_AM
   prompt "Host timer"
-  default TIMER_GETTIMEOFDAY
+  default TIMER_CLOCK_GETTIME
 config TIMER_GETTIMEOFDAY
   bool "gettimeofday"
 config TIMER_CLOCK_GETTIME
@@ -251,16 +252,16 @@ config EXT_VGA_ALWAYS_REFRESH
   bool "VGA display at any cycle"
   default n
 config EXT_VGA_COPY_BY_BYTE
-  bool "Copy vmem by byte"
+  bool "Copy vmem by byte not by uint32_t"
   default n
 config EXT_ALL_WARNINGS_AS_ERRORS
   bool "Treat all warnings as errors"
   default n
 config EXT_NEWLIB_PATH
-  string "Specific newlib installation path"
+  string "Specify newlib installation path"
   default "/home/chiro/Downloads/newlib-3.2.0/build/install/riscv32-unknown-elf"
 config EXT_COMPILE_VERBOSE
-  bool "--verbose"
+  bool "Add --verbose to *FLAGS"
   default n
 config EXT_SHOW_CSR_CHANGE
   bool "Show changes of CSR"
@@ -269,16 +270,16 @@ config EXT_SHOW_CALL_RET
   bool "Show Calls and Rets"
   default n
 config EXT_SHOW_ELF_SYMBOL_NUMBER
-  int "Display NUM symbols after loading ELF file"
+  int "Display NUM starts symbols after loading ELF file"
   default 0
 config EXT_DECODE_OPTIM
-  bool "Instruction Decode Optimization"
+  bool "Enable Instruction Decode Optimization"
   default y
 config EXT_DEVICE_DIVIDER
   int "Device update divider"
   default 128
 config EXT_MULTI_THREAD
-  bool "Use multi-thread to decode instr"
+  bool "Use multi-thread to decode instruction"
   default n
 config EXT_DTS_FILE
   string "Device Tree String file"

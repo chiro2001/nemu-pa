@@ -10,6 +10,7 @@ void init_mm(void);
 void init_device(void);
 void init_ramdisk(void);
 void init_irq(void);
+void init_on_yield(Context* (*target)(Event, Context*));
 void init_fs(void);
 void init_proc(void);
 
@@ -41,7 +42,7 @@ int main() {
 
   extern Fs fs;
   bash(fs);
-
+  
 #ifdef HAS_CTE
   yield();
 #endif

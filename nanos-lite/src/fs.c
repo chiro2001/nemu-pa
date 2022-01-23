@@ -68,6 +68,7 @@ void init_fs() {
   // mkdirs
   char dirs[][32] = {"/share",       "/share/pictures", "/share/fonts",
                      "/share/files", "/share/music",    "/share/music/rhythm",
+                     "/share/games", "/share/games/bird", 
                      "/bin"};
   for (size_t i = 0; i < sizeof(dirs) / 32; i++) {
     // Log("MkDir: %s", dirs[i]);

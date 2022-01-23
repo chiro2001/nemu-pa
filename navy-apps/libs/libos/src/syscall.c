@@ -86,6 +86,7 @@ int _write(int file, char *ptr, int len) {
 
 
 void *_sbrk(intptr_t increment) {
+  _exit(SYS_brk);
   return (void *)-1;
 }
 

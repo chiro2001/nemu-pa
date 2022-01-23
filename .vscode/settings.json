@@ -50,7 +50,8 @@
     "atomic": "c",
     "fs.h": "c",
     "benchmark.h": "c",
-    "set": "cpp"
+    "set": "cpp",
+    "ndl.h": "c"
   },
   "C_Cpp.files.exclude": {
     "**/.vscode": true,

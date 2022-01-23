@@ -66,6 +66,25 @@
         ],
         "preLaunchTask": "Build Single",
         "miDebuggerPath": "/usr/bin/gdb"
+    },{
+        "name": "Debug nemu (run only)",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/nemu/build/riscv32-nemu-interpreter",
+        "args": [],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}/nemu",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+            {
+                "description": "Enable pretty-printing for gdb",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+            }
+        ],
+        "miDebuggerPath": "/usr/bin/gdb"
     },
     {
         "name": "Start QEMU for cpu-tests",

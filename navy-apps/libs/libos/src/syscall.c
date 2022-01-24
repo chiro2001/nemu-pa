@@ -95,6 +95,8 @@ void *_sbrk(intptr_t increment) {
 //   return 0;
 // }
 
+#if 1
+
 #define AM_KEYS(_) \
   _(ESCAPE) _(F1) _(F2) _(F3) _(F4) _(F5) _(F6) _(F7) _(F8) _(F9) _(F10) _(F11) _(F12) \
   _(GRAVE) _(1) _(2) _(3) _(4) _(5) _(6) _(7) _(8) _(9) _(0) _(MINUS) _(EQUALS) _(BACKSPACE) \
@@ -148,6 +150,7 @@ int readch() {
 
 int _read(int file, void *ptr, size_t len) {
   // int readch();
+  assert(0);
   printf("read file=%d, len=%d\n", file, len);
   int l = len;
   char *p = (char *) ptr;
@@ -156,6 +159,8 @@ int _read(int file, void *ptr, size_t len) {
   }
   return len;
 }
+
+#endif
 
 int _close(int fd) {
   _exit(SYS_close);

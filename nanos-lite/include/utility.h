@@ -54,6 +54,8 @@ struct FIL_t {
   char *content;
   // 文件号
   size_t file;
+  // 读取文件偏移位置
+  size_t offset;
 };
 
 typedef struct FIL_t FIL;
@@ -162,7 +164,7 @@ int FsWrite(FIL *target, size_t size, void *src, int mode);
 int FsRead(FIL *target, size_t offset, size_t size, void *dst);
 
 extern size_t file_tail;
-#define MYFS_FILE_START FD_UNUSED
+#define MYFS_FILE_START (FD_UNUSED + 10000)
 #define MYFS_FILE_MAX 512
 extern FIL *files_list[MYFS_FILE_MAX];
 

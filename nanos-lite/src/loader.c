@@ -18,7 +18,11 @@
 #endif
 
 #define PINT(x) Log(#x "\t= %6d (0x%08x)", (int)(x), (size_t)(x))
-#define check(x) assert((x) >= 0)
+// #define check(x) assert((x) >= 0)
+#define check(x)                       \
+  do {                                 \
+    if (x < 0) return (uintptr_t)(-1); \
+  } while (0)
 
 uintptr_t loader(PCB *pcb, const char *filename) {
   Fhdr fhdr;

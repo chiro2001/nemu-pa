@@ -18,6 +18,7 @@ FILE *fopen(const char *filename, const char *method);
 int fclose(FILE *f);
 
 #include "myFs.h"
+#include "utility.h"
 
 extern Fs fs;
 

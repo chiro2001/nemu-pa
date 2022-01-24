@@ -78,6 +78,7 @@ void init_fs() {
     // 只加载普通文件
     if (fd->read != NULL) continue;
     FIL *target = FsMkfile(fs, fd->name);
+    // Log("Created file=%d %s", target->file, fd->name);
     if (!target) {
       Log("Failed to create file!");
       continue;

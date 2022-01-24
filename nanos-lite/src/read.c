@@ -1,7 +1,9 @@
 #include <klib.h>
 #include <stdio.h>
 
-#if 0
+#include "fs.h"
+
+#if 1
 
 #ifndef __ARCH_NATIVE
 
@@ -64,17 +66,21 @@ int readch_() {
 }
 
 int _read(int file, void *ptr, size_t len) {
-  // int readch();
-  // printf("read2 file=%d, len=%d\n", file, (int)len);
-  int l = len;
-  char *p = (char *)ptr;
-  while (l--) {
-    int c = readch_();
-    // printf("got %d(%c)\n", c, (char)c);
-    *(p++) = (char)c;
-    break;
+  Log("read file=%d", file);
+  if (file < FD_UNUSED) {
+    int l = len;
+    char *p = (char *)ptr;
+    while (l--) {
+      int c = readch_();
+      *(p++) = (char)c;
+      break;
+    }
+    return len - l;
+  } else {
+    Log("fno_read_myfs(ptr, 1, len, file=%d, NULL)", file);
+    int l = fno_read_myfs(ptr, 1, len, file, NULL);
+    return len - l;
   }
-  return len - l;
 }
 
 #else

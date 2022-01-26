@@ -684,10 +684,13 @@ size_t fno_read_myfs(void *buf, size_t size, size_t n, int file,
   // size_t res = myfs_read(buf, f->_offset, size * n) / size;
   FIL *target = FsFilFindByFile(file);
   if (!offset) offset = &target->offset;
+  Log("offset = %d, size=%d, n=%d", (int)*offset, (int)size, (int)n);
   // size_t res = (size + f->_offset) < target->size_file ? n :
   // (target->size_file - offset) / size;
-  size_t res = n;
-  FsRead(target, *offset, size * n, buf);
+  size_t res = target->size_file / size - *offset;
+  res = res > n ? n : res;
+  FsRead(target, *offset, size * res, buf);
+  Log("res = %d, size = %d", (int)res, (int)(target->size_file / size));
   *offset += res * size;
   if (offset != &target->offset) target->offset = *offset;
   return res;

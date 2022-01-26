@@ -7,17 +7,6 @@
 
 extern uint8_t ramdisk_start;
 
-typedef size_t (*ReadFn)(void *buf, size_t offset, size_t len);
-typedef size_t (*WriteFn)(const void *buf, size_t offset, size_t len);
-
-typedef struct {
-  char *name;
-  size_t size;
-  size_t disk_offset;
-  ReadFn read;
-  WriteFn write;
-} Finfo;
-
 void nanos_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
   kbd->keydown = ((*((uint32_t *)KBD_ADDR)) & KEYDOWN_MASK) != 0;
   kbd->keycode = ((*((uint32_t *)KBD_ADDR)) & KEYDOWN_MASK)
@@ -95,21 +84,21 @@ size_t fread(void *buf, size_t size, size_t n, FILE *f) {
     return fread_myfs(buf, size, n, f);
   }
 }
-int fseek(FILE *f, long offset, int direction) {
-  if (!f) return EOF;
-  if (get_file_no(f) < FD_UNUSED) {
-    return fseek_ramdisk(f, offset, direction);
-  } else {
-    return fseek_myfs(f, offset, direction);
-  }
-}
-FILE *fopen(const char *filename, const char *method) {
-  if (!filename) return fopen("stdout", "w");
-  for (size_t i = 0; i < FD_UNUSED; i++) {
-    if (strcmp(filename, file_table[i].name) == 0) {
-      return fopen_ramdisk(filename, method);
-    }
-  }
-  return fopen_myfs(filename, method);
-}
+// int fseek(FILE *f, long offset, int direction) {
+//   if (!f) return EOF;
+//   if (get_file_no(f) < FD_UNUSED) {
+//     return fseek_ramdisk(f, offset, direction);
+//   } else {
+//     return fseek_myfs(f, offset, direction);
+//   }
+// }
+// FILE *fopen(const char *filename, const char *method) {
+//   if (!filename) return fopen("stdout", "w");
+//   for (size_t i = 0; i < FD_UNUSED; i++) {
+//     if (strcmp(filename, file_table[i].name) == 0) {
+//       return fopen_ramdisk(filename, method);
+//     }
+//   }
+//   return fopen_myfs(filename, method);
+// }
 // int fclose(FILE *f) {}

@@ -7,6 +7,9 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include "syscall.h"
+#include "arch.h"
+// #include "fs.h"
+#include "syscall.h"
 
 // helper macros
 #define _concat(x, y) x ## y
@@ -58,7 +61,21 @@ void _exit(int status) {
 }
 
 int _open(const char *path, int flags, mode_t mode) {
-  _exit(SYS_open);
+  // _exit(SYS_open);
+  printf("_open(path=%s, flags=%d, mode)\n", path, flags);
+  // extern Finfo file_table[];
+  // if (!path) return _open("stdout", flags, mode);
+  // for (size_t i = 0; i < FD_UNUSED; i++) {
+  //   if (strcmp(path, file_table[i].name) == 0) {
+  //     return i;
+  //   }
+  // }
+  // FILE *f = fopen_myfs(path, "r");
+  // if (!f) return -1;
+  // int file = get_file_no(f);
+  // fclose_myfs(f);
+  // return file;
+
   return 0;
 }
 

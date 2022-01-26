@@ -1,111 +1,132 @@
 {
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-  "version": "0.2.0",
-  "configurations": [
-      {
-          "name": "Debug nemu (Assemply test all)",
-          "type": "cppdbg",
-          "request": "launch",
-          "program": "${workspaceFolder}/nemu/build/riscv32-nemu-interpreter",
-          "args": [],
-          "stopAtEntry": false,
-          "cwd": "${workspaceFolder}/nemu",
-          "environment": [],
-          "externalConsole": false,
-          "MIMode": "gdb",
-          "setupCommands": [
-              {
-                  "description": "Enable pretty-printing for gdb",
-                  "text": "-enable-pretty-printing",
-                  "ignoreFailures": true
-              }
-          ],
-          "preLaunchTask": "Build Assembly",
-          "miDebuggerPath": "/usr/bin/gdb"
-      },
-      {
-        "name": "Debug nemu (Assemply regression)",
-        "type": "cppdbg",
-        "request": "launch",
-        "program": "${workspaceFolder}/nemu/build/riscv32-nemu-interpreter",
-        "args": [],
-        "stopAtEntry": false,
-        "cwd": "${workspaceFolder}/nemu",
-        "environment": [],
-        "externalConsole": false,
-        "MIMode": "gdb",
-        "setupCommands": [
-            {
-                "description": "Enable pretty-printing for gdb",
-                "text": "-enable-pretty-printing",
-                "ignoreFailures": true
-            }
-        ],
-        "preLaunchTask": "Build Assembly Regression",
-        "miDebuggerPath": "/usr/bin/gdb"
-    }, 
-    {
-        "name": "Debug nemu (Single)",
-        "type": "cppdbg",
-        "request": "launch",
-        "program": "${workspaceFolder}/nemu/build/riscv32-nemu-interpreter",
-        "args": [],
-        "stopAtEntry": false,
-        "cwd": "${workspaceFolder}/nemu",
-        "environment": [],
-        "externalConsole": false,
-        "MIMode": "gdb",
-        "setupCommands": [
-            {
-                "description": "Enable pretty-printing for gdb",
-                "text": "-enable-pretty-printing",
-                "ignoreFailures": true
-            }
-        ],
-        "preLaunchTask": "Build Single",
-        "miDebuggerPath": "/usr/bin/gdb"
-    },{
-        "name": "Debug nemu (run only)",
-        "type": "cppdbg",
-        "request": "launch",
-        "program": "${workspaceFolder}/nemu/build/riscv32-nemu-interpreter",
-        "args": [],
-        "stopAtEntry": false,
-        "cwd": "${workspaceFolder}/nemu",
-        "environment": [],
-        "externalConsole": false,
-        "MIMode": "gdb",
-        "setupCommands": [
-            {
-                "description": "Enable pretty-printing for gdb",
-                "text": "-enable-pretty-printing",
-                "ignoreFailures": true
-            }
-        ],
-        "miDebuggerPath": "/usr/bin/gdb"
-    },
-    {
-        "name": "Start QEMU for cpu-tests",
-        "type": "cppdbg",
-        "request": "launch",
-        "program": "${workspaceFolder}/am-kernels/kernels/litenes/build/litenes-riscv32-nemu.elf",
-        // "program": "${workspaceFolder}/am-kernels/tests/cpu-tests/build/add-riscv32-nemu.elf",
-        "MIMode": "gdb",
-        "stopAtEntry": true,
-        "setupCommands": [
-          {
-            "description": "为 gdb 启用整齐打印",
-            "text": "-enable-pretty-printing",
-            "ignoreFailures": true
-          }
-        ],
-        "miDebuggerPath": "/usr/bin/gdb-multiarch",
-        "miDebuggerServerAddress": "localhost:3333",
-        "miDebuggerArgs": "--ex set architecture riscv:rv32",
-        "cwd": "${workspaceFolder}",
-        "preLaunchTask": "Launch QEMU"
-      }
-  ]
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug nemu (Assemply test all)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/nemu/build/riscv32-nemu-interpreter",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/nemu",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Build Assembly",
+            "miDebuggerPath": "/usr/bin/gdb"
+        },
+        {
+            "name": "Debug nemu (Assemply regression)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/nemu/build/riscv32-nemu-interpreter",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/nemu",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Build Assembly Regression",
+            "miDebuggerPath": "/usr/bin/gdb"
+        },
+        {
+            "name": "Debug nemu (Single)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/nemu/build/riscv32-nemu-interpreter",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/nemu",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Build Single",
+            "miDebuggerPath": "/usr/bin/gdb"
+        },
+        {
+            "name": "Debug nemu (run only)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/nemu/build/riscv32-nemu-interpreter",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/nemu",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "miDebuggerPath": "/usr/bin/gdb"
+        },
+        {
+            "name": "Debug nemu (run native)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/nanos-lite/build/nanos-lite-native",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/nemu",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "miDebuggerPath": "/usr/bin/gdb"
+        },
+        {
+            "name": "Start QEMU for cpu-tests",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/am-kernels/kernels/litenes/build/litenes-riscv32-nemu.elf",
+            // "program": "${workspaceFolder}/am-kernels/tests/cpu-tests/build/add-riscv32-nemu.elf",
+            "MIMode": "gdb",
+            "stopAtEntry": true,
+            "setupCommands": [
+                {
+                    "description": "为 gdb 启用整齐打印",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "miDebuggerPath": "/usr/bin/gdb-multiarch",
+            "miDebuggerServerAddress": "localhost:3333",
+            "miDebuggerArgs": "--ex set architecture riscv:rv32",
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "Launch QEMU"
+        }
+    ]
 }

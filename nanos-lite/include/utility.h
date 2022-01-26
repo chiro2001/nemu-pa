@@ -164,8 +164,8 @@ int FsWrite(FIL *target, size_t size, void *src, int mode);
 int FsRead(FIL *target, size_t offset, size_t size, void *dst);
 
 extern size_t file_tail;
-#define MYFS_FILE_START (FD_UNUSED + 10000)
+#define MYFS_FILE_START (FD_UNUSED + 10)
 #define MYFS_FILE_MAX 512
-extern FIL *files_list[MYFS_FILE_MAX];
+extern FIL *files_list[];
 
 #endif

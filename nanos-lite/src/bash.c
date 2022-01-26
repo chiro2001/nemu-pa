@@ -35,6 +35,7 @@ int bash_parser(char *in) {
   if (!*in) return 0;
   while (*in == ' ') in++;
   if (!*in) return 0;
+  if (*in == '\n') return 0;
   // 注释
   if (*in == '#') return 0;
   char *arg = in;
@@ -45,6 +46,7 @@ int bash_parser(char *in) {
     *arg = '\0';
     arg++;
   }
+  if (*arg == '\n') *arg = '\0';
   char *name = in;
   if (!*arg) arg = NULL;
 
@@ -116,23 +118,15 @@ int bash_parser(char *in) {
 
 int bash_run_script(const char *filename) {
   FILE *f = fopen(filename, "r");
-  FILE *f2 = stdin;
+  // FILE *f2 = stdin;
   if (!f) {
     printf("script %s not found!\n", filename);
     return 1;
   } else {
     Log("script %s open done, file=%d", filename, get_file_no(f));
   }
-  int file = get_file_no(f);
-  memcpy(f, f2, sizeof(FILE));
-  // Log("f->file = %d", (int)(f->));
-  get_file_no(f) = file;
-  char c = fgetc(f);
-  // char c = read(get_file_no(f));
-  // int c = 0;
-  // fread(&c, 1, 1, f);
-  Log("fgetc = %c (%d)", c, (int)c);
   while (fgets(input, FS_PATH_MAX, f) > 0) {
+    if (!*input) break;
     Log("input = %s", input);
     bash_parser(input);
   }

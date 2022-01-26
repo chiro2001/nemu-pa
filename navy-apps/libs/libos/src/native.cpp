@@ -46,6 +46,7 @@ static char fsimg_path[512] = "";
 
 static inline void get_fsimg_path(char *newpath, const char *path) {
   sprintf(newpath, "%s%s", fsimg_path, path);
+  printf("get_fsimg_path(%s, %s)\n", newpath, path);
 }
 
 #define _KEYS(_) \
@@ -157,6 +158,7 @@ extern "C" int execve(const char *filename, char *const argv[], char *const envp
 
 FILE *fopen(const char *path, const char *mode) {
   char newpath[512];
+  printf("fopen(%s, %s)\n", path, mode);
   return glibc_fopen(redirect_path(newpath, path), mode);
 }
 

@@ -98,9 +98,9 @@ CFLAGS   += -$(CONFIG_EXT_CC_AM_OPT) -MMD -Wall $(if $(CONFIG_EXT_ALL_WARNINGS_A
             -D__PLATFORM__=$(PLATFORM) -D__PLATFORM_$(shell echo $(PLATFORM) | tr a-z A-Z | tr - _) \
             -DARCH_H=\"arch/$(ARCH).h\" \
             -fno-asynchronous-unwind-tables -fno-builtin -fno-stack-protector \
-            -Wno-main -U_FORTIFY_SOURCE
-CXXFLAGS +=  $(CFLAGS) -ffreestanding -fno-rtti -fno-exceptions
-ASFLAGS  += -MMD $(INCFLAGS)
+            -Wno-main -U_FORTIFY_SOURCE -g
+CXXFLAGS +=  $(CFLAGS) -ffreestanding -fno-rtti -fno-exceptions -g
+ASFLAGS  += -MMD $(INCFLAGS) -g
 
 ifdef CONFIG_EXT_COMPILE_VERBOSE
 CFLAGS 		+= --verbose
@@ -173,6 +173,7 @@ refresh-libs:
 	$(APREFIX)$(if $(LINK_NEWLIB),ar x $(NEWLIB_PATH)/lib/libnosys.a --output=$(DST_DIR)/lib,)
 	$(APREFIX)$(if $(LINK_NEWLIB),rm -f $(DST_DIR)/lib/write.o,)
 	$(APREFIX)$(if $(LINK_NEWLIB),rm -f $(DST_DIR)/lib/read.o,)
+	$(APREFIX)$(if $(LINK_NEWLIB),rm -f $(DST_DIR)/lib/openr.o,)
 
 ### Rule (archive): objects (`*.o`) -> `ARCHIVE.a` (ar)
 ifeq ($(ISA), riscv32)

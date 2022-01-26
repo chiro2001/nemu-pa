@@ -1,13 +1,14 @@
 // Written by:
 // Date:
 
-#include <assert.h>
+// #include <assert.h>
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "common.h"
 #include "myFs.h"
 
 /// 从文件名查找文件夹内的文件
@@ -126,7 +127,7 @@ PATH *FsPathInsert(PATH *tail, FIL *file) {
 }
 
 size_t file_tail = MYFS_FILE_START;
-FIL *files_list[MYFS_FILE_MAX];
+FIL *files_list[MYFS_FILE_MAX + MYFS_FILE_START + 1];
 
 /// 初始化一个文件(FIL)
 /// \param parent
@@ -149,6 +150,7 @@ void FsFilInit(FIL *parent, FIL **file, const char *name) {
   (*file)->type = REGULAR_FILE;
   (*file)->file = file_tail;
   files_list[file_tail++] = *file;
+  (*file)->offset = 0;
 }
 
 /// 新建文件链接

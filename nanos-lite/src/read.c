@@ -66,7 +66,7 @@ int readch_() {
 }
 
 int _read(int file, void *ptr, size_t len) {
-  Log("read file=%d", file);
+  // Log("read file=%d", file);
   if (file < FD_UNUSED) {
     int l = len;
     char *p = (char *)ptr;
@@ -77,7 +77,7 @@ int _read(int file, void *ptr, size_t len) {
     }
     return len - l;
   } else {
-    Log("fno_read_myfs(ptr, 1, len, file=%d, NULL)", file);
+    // Log("fno_read_myfs(ptr, 1, len, file=%d, NULL)", file);
     int l = fno_read_myfs(ptr, 1, len, file, NULL);
     return len - l;
   }

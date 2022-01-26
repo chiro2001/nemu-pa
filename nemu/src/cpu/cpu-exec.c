@@ -165,9 +165,11 @@ void cpu_exec(uint64_t n) {
 
   uint64_t timer_start = get_time();
 
+#ifdef CONFIG_EXT_MULTI_THREAD
+
   signal(SIGINT, sign_handle);
 
-#ifdef CONFIG_EXT_MULTI_THREAD
+  
   // start instr decode thread
   // DEFINE_SPINLOCK(instr_lock);
   int spin_ret = pthread_spin_init(&instr_lock, PTHREAD_PROCESS_SHARED);

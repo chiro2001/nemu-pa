@@ -114,6 +114,7 @@ extern const char FsErrorMessages[8][64];
 // #define FS_SHOW_DIR_SPLIT
 
 FIL *FsFilFindByName(FIL *dir, const char *name);
+FIL *FsFilFindByFile(size_t file);
 
 void FsFilSort(FIL *dir, int reverse);
 

@@ -172,6 +172,7 @@ refresh-libs:
 	$(APREFIX)$(if $(LINK_NEWLIB),ar x $(NEWLIB_PATH)/lib/libc.a --output=$(DST_DIR)/lib,)
 	$(APREFIX)$(if $(LINK_NEWLIB),ar x $(NEWLIB_PATH)/lib/libnosys.a --output=$(DST_DIR)/lib,)
 	$(APREFIX)$(if $(LINK_NEWLIB),rm -f $(DST_DIR)/lib/write.o,)
+	$(APREFIX)$(if $(LINK_NEWLIB),rm -f $(DST_DIR)/lib/lseek.o,)
 	$(APREFIX)$(if $(LINK_NEWLIB),rm -f $(DST_DIR)/lib/read.o,)
 	$(APREFIX)$(if $(LINK_NEWLIB),rm -f $(DST_DIR)/lib/openr.o,)
 

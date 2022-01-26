@@ -19,6 +19,7 @@ int bash_exec(char *pathStr) {
   // naive_uload(current, pathStr);
   uintptr_t entry = loader(current, pathStr);
   if (entry != (uintptr_t)(-1)) {
+    Log("Jump to entry = 0x%08x", entry);
     ((void (*)())entry)();
   } else {
     Log("Loading script %s", pathStr);
@@ -127,6 +128,14 @@ int bash_run_script(const char *filename) {
   }
   while (fgets(input, FS_PATH_MAX, f) > 0) {
     if (!*input) break;
+    char *p = input;
+    while (*p) {
+      if (*p == '\n' && !*(p + 1)) {
+        *p = '\0';
+        break;
+      }
+      p++;
+    }
     Log("input = %s", input);
     bash_parser(input);
   }

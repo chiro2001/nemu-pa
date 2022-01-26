@@ -19,9 +19,13 @@
 
 #define PINT(x) Log(#x "\t= %6d (0x%08x)", (int)(x), (size_t)(x))
 // #define check(x) assert((x) >= 0)
-#define check(x)                       \
-  do {                                 \
-    if (x < 0) return (uintptr_t)(-1); \
+#define check(x)                \
+  do {                          \
+    int xx = (int)(x);          \
+    if (xx < 0) {               \
+      printf(#x " = %d\n", xx); \
+      return (uintptr_t)(-1);   \
+    }                           \
   } while (0)
 
 uintptr_t loader(PCB *pcb, const char *filename) {
@@ -32,7 +36,6 @@ uintptr_t loader(PCB *pcb, const char *filename) {
   f = fopen(filename, "rb");
   if (f == NULL) return -1;
   Fhdr *fp = &fhdr;
-  FILE *f_elf = fopen(filename, "rb");
 
   memset(fp, 0, sizeof(*fp));
   check(readident(f, fp));
@@ -40,29 +43,30 @@ uintptr_t loader(PCB *pcb, const char *filename) {
   check(fp->readelfehdr(f, fp));
   check(readelfstrndx(f, fp));
   check(readelfshdrs(f, fp));
-
   check(fseek(f, fp->phoff, SEEK_SET));
 
   entry = fp->entry;
   // Log("Found entry at: 0x%08x", entry);
 
   for (int i = 0; i < fp->phnum; i++) {
-    // PINT(i);
     Elf_Phdr *ph = getelf32phdr(f, fp);
+    assert(ph);
     if (ph->filesz == 0) continue;
     // segment使用的内存就是[VirtAddr, VirtAddr + MemSiz)这一连续区间,
     // 然后将segment的内容从ELF文件中读入到这一内存区间, 并将[VirtAddr +
     // FileSiz, VirtAddr + MemSiz)对应的物理区间清零.
     uint8_t *vaddr = (uint8_t *)ph->vaddr;
+    if (!vaddr) vaddr += 0x83000000;
+    else vaddr += 0x03000000;
+    Log("section: [0x%08x, 0x%08x)", vaddr, vaddr + ph->memsz);
     memset(vaddr, 0, ph->memsz);
-    fseek(f_elf, ph->offset, SEEK_SET);
-    fread(vaddr, ph->filesz, 1, f_elf);
+    fseek(f, ph->offset, SEEK_SET);
+    int r = fread(vaddr, 1, ph->filesz, f);
     if (ph) free(ph);
   }
 
   freeelf(&fhdr);
   fclose(f);
-  fclose(f_elf);
   return entry;
 }
 

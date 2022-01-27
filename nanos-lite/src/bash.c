@@ -36,7 +36,7 @@ int bash_exec(char *pathStr) {
   user_running = true;
   // naive_uload(current, pathStr);
   uintptr_t entry = loader(current, pathStr);
-  printf("entry = 0x%08x\n", entry);
+  // printf("entry = 0x%08x\n", entry);
   if (entry != (uintptr_t)(-1)) {
     Log("Jump to entry = 0x%08x", entry);
     ((void (*)())entry)();
@@ -152,11 +152,11 @@ int bash_parser(char *in) {
 
 int bash_run_script(const char *filename) {
 #ifdef __ISA_NATIVE__
-  printf("Cannot execute elf file in native ISA!\n");
-  return 0;
+  // printf("Cannot execute elf file in native ISA!\n");
+  // return 0;
 #endif
   FILE *f = fopen(filename, "r");
-  printf("fopen at: %p\n", fopen);
+  // printf("fopen at: %p\n", fopen);
   // FILE *f2 = stdin;
   if (!f) {
     printf("script %s not found!\n", filename);
@@ -174,7 +174,7 @@ int bash_run_script(const char *filename) {
       }
       p++;
     }
-    Log("input = %s", input);
+    // Log("input = %s", input);
     bash_parser(input);
   }
   fclose(f);

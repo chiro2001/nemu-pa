@@ -678,7 +678,7 @@ FIL *FsFilFindByFile(size_t file) { return files_list[file]; }
 
 size_t fno_read_myfs(void *buf, size_t size, size_t n, int file,
                      size_t *offset) {
-  printf("fno_read_myfs file=%d\n", file);
+  // printf("fno_read_myfs file=%d\n", file);
   FIL *target = FsFilFindByFile(file);
   assert(target);
   assert(size);

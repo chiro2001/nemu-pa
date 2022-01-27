@@ -3,7 +3,7 @@
 
 #include "fs.h"
 
-#if 0
+#if 1
 
 #ifndef __ISA_NATIVE__
 

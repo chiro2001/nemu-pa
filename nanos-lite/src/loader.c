@@ -6,12 +6,14 @@
 #include "libelf/elf.h"
 
 #ifdef __ISA_NATIVE__
+#include <unistd.h>
 // #include "../../navy-apps/libs/libos/src/native.cpp"
 FILE *(*glibc_fopen)(const char *path, const char *mode) = NULL;
 int (*glibc_open)(const char *path, int flags, ...) = NULL;
 ssize_t (*glibc_read)(int fd, void *buf, size_t count) = NULL;
 ssize_t (*glibc_write)(int fd, const void *buf, size_t count) = NULL;
-int (*glibc_execve)(const char *filename, char *const argv[], char *const envp[]) = NULL;
+int (*glibc_execve)(const char *filename, char *const argv[],
+                    char *const envp[]) = NULL;
 
 char fsimg_path[512] = "";
 
@@ -20,13 +22,13 @@ static inline void get_fsimg_path(char *newpath, const char *path) {
     sprintf(newpath, "%s/%s", fsimg_path, path);
   else
     sprintf(newpath, "%s%s", fsimg_path, path);
-  fprintf(stderr, "get_fsimg_path(%s, %s)\n", newpath, path);
+  // fprintf(stderr, "get_fsimg_path(%s, %s)\n", newpath, path);
 }
 
-static const char* redirect_path(char *newpath, const char *path) {
+static const char *redirect_path(char *newpath, const char *path) {
   get_fsimg_path(newpath, path);
   if (0 == access(newpath, 0)) {
-    fprintf(stderr, "Redirecting file open: %s -> %s\n", path, newpath);
+    // fprintf(stderr, "Redirecting file open: %s -> %s\n", path, newpath);
     return newpath;
   }
   return path;
@@ -40,9 +42,9 @@ int execve(const char *filename, char *const argv[], char *const envp[]);
 
 FILE *fopen(const char *path, const char *mode) {
   char newpath[512];
-  printf("fopen(%s, %s)\n", path, mode);
+  // printf("fopen(%s, %s)\n", path, mode);
   FILE *f = glibc_fopen(redirect_path(newpath, path), mode);
-  printf("fopen f=%p\n", f);
+  // printf("fopen f=%p\n", f);
   return f;
 }
 
@@ -83,13 +85,34 @@ ssize_t write(int fd, const void *buf, size_t count) {
     }                            \
   } while (0)
 
+#if defined(__ISA_NATIVE__)
+#include <dlfcn.h>
+#include <unistd.h>
+
+static char execute_file_path[FS_PATH_MAX];
+
+void execute_file() {
+  // char *argv[32];
+  if (!*execute_file_path) return;
+  // memset(argv, 0, sizeof(char *) * 32);
+  // argv[0] = execute_file_path;
+  // char *envp[] = {0, NULL};get_fsimg_path
+  // printf("exec pre ok.\n");
+  // execve(execute_file_path, argv, envp);
+  system(execute_file_path);
+  // printf("exec done.\n");
+  execute_file_path[0] = '\0';
+}
+
+#endif
+
 uintptr_t loader(PCB *pcb, const char *filename) {
   Fhdr fhdr;
   FILE *f;
   uintptr_t entry = 0;
 
   check((f = fopen(filename, "rb")) ? 0 : -1);
-  printf("filename=%s, file=%p\n", filename, f);
+  // printf("filename=%s, file=%p\n", filename, f);
   Fhdr *fp = &fhdr;
 
   memset(fp, 0, sizeof(*fp));
@@ -102,6 +125,8 @@ uintptr_t loader(PCB *pcb, const char *filename) {
 
   entry = fp->entry;
   // Log("Found entry at: 0x%08x", entry);
+
+#ifndef __ISA_NATIVE__
 
   for (int i = 0; i < fp->phnum; i++) {
     Elf_Phdr *ph = getelf32phdr(f, fp);
@@ -122,10 +147,27 @@ uintptr_t loader(PCB *pcb, const char *filename) {
     fread(vaddr, 1, ph->filesz, f);
     if (ph) free(ph);
   }
-
+#endif
   freeelf(&fhdr);
   fclose(f);
+#ifndef __ISA_NATIVE__
   return entry;
+#endif
+
+#ifdef __ISA_NATIVE__
+  char newpath[FS_PATH_MAX + 64];
+  redirect_path(newpath, filename);
+  // uintptr_t entry = 0;
+  printf("filename=%s\n", newpath);
+  // void *dlHandler = dlopen(newpath, RTLD_NOW);
+  // printf("dlerror: %s\n", dlerror());
+  // check(dlHandler == NULL ? -1 : 0);
+  // entry = (uintptr_t)dlsym(dlHandler, "main");
+  // return entry;
+  strcpy(execute_file_path, newpath);
+  entry = (uintptr_t)execute_file;
+  return entry;
+#endif
 }
 
 void naive_uload(PCB *pcb, const char *filename) {

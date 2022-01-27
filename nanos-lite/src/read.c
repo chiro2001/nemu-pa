@@ -3,9 +3,9 @@
 
 #include "fs.h"
 
-#if 1
+#if 0
 
-#ifndef __ARCH_NATIVE
+#ifndef __ISA_NATIVE__
 
 #if defined(__ARCH_X86_NEMU)
 #define DEVICE_BASE 0x0

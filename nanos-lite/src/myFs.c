@@ -678,13 +678,18 @@ FIL *FsFilFindByFile(size_t file) { return files_list[file]; }
 
 size_t fno_read_myfs(void *buf, size_t size, size_t n, int file,
                      size_t *offset) {
+  printf("fno_read_myfs file=%d\n", file);
   FIL *target = FsFilFindByFile(file);
+  assert(target);
+  assert(size);
+  assert(n);
   if (!offset) offset = &target->offset;
   // Log("offset = %d, size=%d, n=%d", (int)*offset, (int)size, (int)n);
   size_t res = target->size_file / size - *offset;
   res = res > n ? n : res;
   FsRead(target, *offset, size * res, buf);
-  // Log("res = %d, filesize/size = %d", (int)res, (int)(target->size_file / size));
+  // Log("res = %d, filesize/size = %d", (int)res, (int)(target->size_file /
+  // size));
   *offset += res * size;
   if (offset != &target->offset) target->offset = *offset;
   return res;
@@ -696,6 +701,7 @@ size_t fread_myfs(void *buf, size_t size, size_t n, FILE *f) {
 
 size_t fseek_myfs(FILE *f, size_t offset, size_t direction) {
   FIL *target = FsFilFindByFile(get_file_no(f));
+  assert(target);
   f->_offset = offset < target->size_file ? offset : target->size_file;
   return 0;
 }

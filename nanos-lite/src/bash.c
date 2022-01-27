@@ -1,6 +1,10 @@
 #include "am.h"
 #include "fs.h"
 #include ARCH_H
+#ifdef __ISA_NATIVE__
+#include <dlfcn.h>
+#define RTLD_NEXT (void*)(-1)
+#endif
 
 void init_on_yield(void (*target)(Event, Context *));
 int bash_run_script(const char *filename);
@@ -9,15 +13,30 @@ extern Fs fs;
 
 char input[FS_PATH_MAX + 1];
 char cwd[FS_PATH_MAX + 1];
+char *executable[FS_PATH_MAX];
+char **exec_tail = NULL;
 
 bool user_running = false;
 
 void bash_return(Event e, Context *c) { bash(NULL); }
 
+void bash_init_exec() {
+  // /bin/*
+  FIL *bin = FsFilFindByName(fs->root, "bin");
+  memset(executable, 0, sizeof(executable));
+  exec_tail = executable;
+  for (size_t i = 0; i < bin->size_children; i++) {
+    if (bin->children[i]->link) continue;
+    *(exec_tail++) = bin->children[i]->name;
+    // Log("path: %s", *(exec_tail - 1));
+  }
+}
+
 int bash_exec(char *pathStr) {
   user_running = true;
   // naive_uload(current, pathStr);
   uintptr_t entry = loader(current, pathStr);
+  printf("entry = 0x%08x\n", entry);
   if (entry != (uintptr_t)(-1)) {
     Log("Jump to entry = 0x%08x", entry);
     ((void (*)())entry)();
@@ -50,6 +69,20 @@ int bash_parser(char *in) {
   if (*arg == '\n') *arg = '\0';
   char *name = in;
   if (!*arg) arg = NULL;
+
+  char **exec_p = executable;
+  while (exec_p != exec_tail) {
+    if (strcmp(name, *exec_p) == 0) {
+      char exec_name_[FS_PATH_MAX + 2];
+      sprintf(exec_name_, "/bin/%s", name);
+      int ret = bash_exec(exec_name_);
+      if (ret) {
+        printf("%s returns %d", name, ret);
+      }
+      return 0;
+    }
+    exec_p++;
+  }
 
   if (strcmp(name, "exit") == 0) {
     return 1;
@@ -118,7 +151,12 @@ int bash_parser(char *in) {
 }
 
 int bash_run_script(const char *filename) {
+#ifdef __ISA_NATIVE__
+  printf("Cannot execute elf file in native ISA!\n");
+  return 0;
+#endif
   FILE *f = fopen(filename, "r");
+  printf("fopen at: %p\n", fopen);
   // FILE *f2 = stdin;
   if (!f) {
     printf("script %s not found!\n", filename);
@@ -143,7 +181,37 @@ int bash_run_script(const char *filename) {
   return 0;
 }
 
-int bash_startup() { return bash_run_script("/bin/boot"); }
+int bash_startup() {
+  bash_init_exec();
+#ifdef __ISA_NATIVE__
+  char *navyhome = getenv("NAVY_HOME");
+  assert(navyhome);
+  extern char fsimg_path[];
+  sprintf(fsimg_path, "%s/fsimg", navyhome);
+  printf("fsimg_path = %s\n", fsimg_path);
+  extern FILE *(*glibc_fopen)(const char *path, const char *mode);
+  extern int (*glibc_open)(const char *path, int flags, ...);
+  extern ssize_t (*glibc_read)(int fd, void *buf, size_t count);
+  extern ssize_t (*glibc_write)(int fd, const void *buf, size_t count);
+  extern int (*glibc_execve)(const char *filename, char *const argv[],
+                             char *const envp[]);
+  glibc_fopen =
+      (FILE * (*)(const char *, const char *)) dlsym(RTLD_NEXT, "fopen");
+  assert(glibc_fopen != NULL);
+  glibc_open = (int (*)(const char *, int, ...))dlsym(RTLD_NEXT, "open");
+  assert(glibc_open != NULL);
+  glibc_read =
+      (ssize_t(*)(int fd, void *buf, size_t count))dlsym(RTLD_NEXT, "read");
+  assert(glibc_read != NULL);
+  glibc_write = (ssize_t(*)(int fd, const void *buf, size_t count))dlsym(
+      RTLD_NEXT, "write");
+  assert(glibc_write != NULL);
+  glibc_execve = (int (*)(const char *, char *const[], char *const[]))dlsym(
+      RTLD_NEXT, "execve");
+  assert(glibc_execve != NULL);
+#endif
+  return bash_run_script("./bin/boot");
+}
 
 void bash(Fs fs_) {
   init_on_yield(bash_return);

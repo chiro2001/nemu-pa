@@ -55,7 +55,8 @@
     "fstream": "c",
     "iosfwd": "c",
     "istream": "c",
-    "limits": "c"
+    "limits": "c",
+    "myfs.h": "c"
   },
   "C_Cpp.files.exclude": {
     "**/.vscode": true,

@@ -76,6 +76,7 @@ void init_fs() {
   }
 }
 
+#ifndef __ISA_NATIVE__
 size_t fread(void *buf, size_t size, size_t n, FILE *f) {
   if (!f) return 0;
   if (get_file_no(f) < FD_UNUSED) {
@@ -102,3 +103,4 @@ size_t fread(void *buf, size_t size, size_t n, FILE *f) {
 //   return fopen_myfs(filename, method);
 // }
 // int fclose(FILE *f) {}
+#endif

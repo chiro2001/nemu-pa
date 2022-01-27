@@ -17,7 +17,7 @@ void init_proc(void);
 int main() {
   extern const char logo[];
   // printf("%s", logo);
-  Log("Hello from Nanos-lite");
+  Log("Hello from Nanos-lite ISA=" __ISA__);
   Log("Build time: %s, %s", __TIME__, __DATE__);
 
   init_mm();

@@ -5,6 +5,61 @@
 #include "fs.h"
 #include "libelf/elf.h"
 
+#ifdef __ISA_NATIVE__
+// #include "../../navy-apps/libs/libos/src/native.cpp"
+FILE *(*glibc_fopen)(const char *path, const char *mode) = NULL;
+int (*glibc_open)(const char *path, int flags, ...) = NULL;
+ssize_t (*glibc_read)(int fd, void *buf, size_t count) = NULL;
+ssize_t (*glibc_write)(int fd, const void *buf, size_t count) = NULL;
+int (*glibc_execve)(const char *filename, char *const argv[], char *const envp[]) = NULL;
+
+char fsimg_path[512] = "";
+
+static inline void get_fsimg_path(char *newpath, const char *path) {
+  if (*path != '/')
+    sprintf(newpath, "%s/%s", fsimg_path, path);
+  else
+    sprintf(newpath, "%s%s", fsimg_path, path);
+  fprintf(stderr, "get_fsimg_path(%s, %s)\n", newpath, path);
+}
+
+static const char* redirect_path(char *newpath, const char *path) {
+  get_fsimg_path(newpath, path);
+  if (0 == access(newpath, 0)) {
+    fprintf(stderr, "Redirecting file open: %s -> %s\n", path, newpath);
+    return newpath;
+  }
+  return path;
+}
+
+FILE *fopen(const char *path, const char *mode);
+int open(const char *path, int flags, ...);
+ssize_t read(int fd, void *buf, size_t count);
+ssize_t write(int fd, const void *buf, size_t count);
+int execve(const char *filename, char *const argv[], char *const envp[]);
+
+FILE *fopen(const char *path, const char *mode) {
+  char newpath[512];
+  printf("fopen(%s, %s)\n", path, mode);
+  FILE *f = glibc_fopen(redirect_path(newpath, path), mode);
+  printf("fopen f=%p\n", f);
+  return f;
+}
+
+int open(const char *path, int flags, ...) {
+  char newpath[512];
+  return glibc_open(redirect_path(newpath, path), flags);
+}
+
+ssize_t read(int fd, void *buf, size_t count) {
+  return glibc_read(fd, buf, count);
+}
+
+ssize_t write(int fd, const void *buf, size_t count) {
+  return glibc_write(fd, buf, count);
+}
+#endif
+
 #ifdef __LP64__
 #undef __LP64__
 #endif
@@ -19,13 +74,13 @@
 
 #define PINT(x) Log(#x "\t= %6d (0x%08x)", (int)(x), (size_t)(x))
 // #define check(x) assert((x) >= 0)
-#define check(x)                \
-  do {                          \
-    int xx = (int)(x);          \
-    if (xx < 0) {               \
-      printf(#x " = %d\n", xx); \
-      return (uintptr_t)(-1);   \
-    }                           \
+#define check(x)                 \
+  do {                           \
+    int xx = (int)(x);           \
+    if (xx < 0) {                \
+      printf(#x " == %d\n", xx); \
+      return (uintptr_t)(-1);    \
+    }                            \
   } while (0)
 
 uintptr_t loader(PCB *pcb, const char *filename) {
@@ -33,8 +88,8 @@ uintptr_t loader(PCB *pcb, const char *filename) {
   FILE *f;
   uintptr_t entry = 0;
 
-  f = fopen(filename, "rb");
-  if (f == NULL) return -1;
+  check((f = fopen(filename, "rb")) ? 0 : -1);
+  printf("filename=%s, file=%p\n", filename, f);
   Fhdr *fp = &fhdr;
 
   memset(fp, 0, sizeof(*fp));
@@ -56,12 +111,15 @@ uintptr_t loader(PCB *pcb, const char *filename) {
     // 然后将segment的内容从ELF文件中读入到这一内存区间, 并将[VirtAddr +
     // FileSiz, VirtAddr + MemSiz)对应的物理区间清零.
     uint8_t *vaddr = (uint8_t *)ph->vaddr;
-    if (!vaddr) vaddr += 0x83000000;
-    else vaddr += 0x03000000;
-    Log("section: [0x%08x, 0x%08x)", vaddr, vaddr + ph->memsz);
+    if (!vaddr)
+      vaddr += 0x83000000;
+    else
+      vaddr += 0x03000000;
+    Log("section: [0x%08x, 0x%08x)", (unsigned int)(vaddr),
+        (unsigned int)(vaddr + ph->memsz));
     memset(vaddr, 0, ph->memsz);
     fseek(f, ph->offset, SEEK_SET);
-    int r = fread(vaddr, 1, ph->filesz, f);
+    fread(vaddr, 1, ph->filesz, f);
     if (ph) free(ph);
   }
 

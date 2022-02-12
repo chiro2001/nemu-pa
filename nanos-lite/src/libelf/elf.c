@@ -17,7 +17,7 @@
 #define fseek fseek_myfs
 #endif
 
-// #define DEBUG
+#define DEBUG
 
 #ifdef DEBUG
 static int verbose = 1;

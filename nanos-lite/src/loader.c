@@ -158,7 +158,7 @@ uintptr_t loader(PCB *pcb, const char *filename) {
   char newpath[FS_PATH_MAX + 64];
   redirect_path(newpath, filename);
   // uintptr_t entry = 0;
-  printf("filename=%s\n", newpath);
+  // printf("filename=%s\n", newpath);
   // void *dlHandler = dlopen(newpath, RTLD_NOW);
   // printf("dlerror: %s\n", dlerror());
   // check(dlHandler == NULL ? -1 : 0);

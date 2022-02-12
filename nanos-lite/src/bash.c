@@ -188,7 +188,7 @@ int bash_startup() {
   assert(navyhome);
   extern char fsimg_path[];
   sprintf(fsimg_path, "%s/fsimg", navyhome);
-  printf("fsimg_path = %s\n", fsimg_path);
+  // printf("fsimg_path = %s\n", fsimg_path);
   extern FILE *(*glibc_fopen)(const char *path, const char *mode);
   extern int (*glibc_open)(const char *path, int flags, ...);
   extern ssize_t (*glibc_read)(int fd, void *buf, size_t count);
